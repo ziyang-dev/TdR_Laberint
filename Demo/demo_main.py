@@ -1,6 +1,6 @@
-from maze_generator import generator, randomGap
-from maze_printer import printBoard, updatePass
-from algorithm_A import maze_resolve_A
+from demo_maze_generator import generator, randomGap
+from demo_maze_printer import printBoard, updatePass
+from demo_algorithm_A import maze_resolve_A
 n=10
 maze=generator(n)
 maze=randomGap(maze,10,n)
