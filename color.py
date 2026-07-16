@@ -5,6 +5,7 @@ error=              (255, 0, 0)         #fluorescent red
 exit=               (255, 160, 170)     #light red
 star=               (140, 210, 255)     #light gleu
 
+
 gren=               (180, 245, 205)     #light green
 yellow=             (255, 230, 150)     #light yellow
 blue=               (40, 60, 95)        #deep blue
