@@ -1,7 +1,15 @@
 import pygame
 import Color
 from maze_representation import drawGrid, drawAuxiliaryLines
-maze=[[-1, 0, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1], [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1], [-1, 1, -1, 0, -1, 0, -1, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, -1, 0, -1], [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], [-1, 0, -1, 1, -1, 1, -1, 0, -1, 0, -1, 0, -1, 1, -1, 1, -1, 1, -1, 0, -1], [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1], [-1, 0, -1, 1, -1, 0, -1, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, -1], [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], [-1, 0, -1, 1, -1, 0, -1, 0, -1, 1, -1, 0, -1, 1, -1, 1, -1, 1, -1, 0, -1], [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1], [-1, 1, -1, 0, -1, 0, -1, 1, -1, 0, -1, 1, -1, 1, -1, 1, -1, 0, -1, 0, -1], [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1], [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, -1, 0, -1, 1, -1, 0, -1], [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [-1, 0, -1, 0, -1, 0, -1, 1, -1, 0, -1, 0, -1, 1, -1, 1, -1, 1, -1, 1, -1], [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [-1, 0, -1, 1, -1, 1, -1, 0, -1, 0, -1, 1, -1, 1, -1, 1, -1, 1, -1, 0, -1], [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1], [-1, 0, -1, 0, -1, 0, -1, 0, -1, 1, -1, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1], [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1], [-1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 0, -1]]
+
+from generate.recursive_backtracker import algorithm_recursive_backtracker
+from generate.prim_algorithm import algorithm_prim
+from generate.binary_tree import algorithm_binary_tree
+
+maze=algorithm_binary_tree(50)
+
+
+
 
 #constants
 height,width=600,600 # x,y //tamany de la pantalla
@@ -31,7 +39,11 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running=False
-    
+            if event.key == pygame.K_SPACE: #sicronizar animacion
+                #maze=next(gen)
+                pass
+
+
     screen.fill(Color.background) #posar color de fons
 
     drawGrid(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
