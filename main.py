@@ -1,13 +1,14 @@
-import pygame
+'''import pygame
 import Color
 from maze_representation import drawGrid, drawAuxiliaryLines
 
 from generate.recursive_backtracker import algorithm_recursive_backtracker
 from generate.prim_algorithm import algorithm_prim
 from generate.binary_tree import algorithm_binary_tree
+from generate.sidewinder import algorithm_sidewinder
 
-maze=algorithm_binary_tree(50)
-
+maze=algorithm_sidewinder(20)
+print(maze)
 
 
 
@@ -48,8 +49,27 @@ while running:
 
     drawGrid(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
     
-    drawAuxiliaryLines(screen,gridSize,gridNumber,width,height) #dibuixar graella de auxiliar
+    #drawAuxiliaryLines(screen,gridSize,gridNumber,width,height) #dibuixar graella de auxiliar
 
     pygame.display.update() #actualitzar per cada frame
     clock.tick(30) #ajustar a 30 FPS
-pygame.quit()
+pygame.quit()'''
+
+
+
+import networkx as nx
+import matplotlib.pyplot as plt
+from networkx.drawing.nx_pydot import graphviz_layout
+
+G=nx.Graph()
+
+G.add_edge("A","B")
+G.add_edge("A","C")
+G.add_edge("B","D")
+G.add_edge("A","E")
+
+pos=graphviz_layout(G,prog="dot")
+
+nx.draw(G, pos, with_labels=True)
+
+plt.show()
