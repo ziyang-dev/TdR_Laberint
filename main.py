@@ -1,4 +1,4 @@
-'''import pygame
+import pygame
 import Color
 from maze_representation import drawGrid, drawAuxiliaryLines
 
@@ -7,8 +7,11 @@ from generate.prim_algorithm import algorithm_prim
 from generate.binary_tree import algorithm_binary_tree
 from generate.sidewinder import algorithm_sidewinder
 
+from graph_representation import maze_to_tree_graph
+
+
 maze=algorithm_sidewinder(20)
-print(maze)
+
 
 
 
@@ -23,6 +26,9 @@ gridSize=height//gridNumber #tamany de cada casella a un tamany enter
 height,width=gridSize*gridNumber, gridSize*gridNumber #ajusta el tamany quitant les vores
 
 
+maze_to_tree_graph(maze)
+
+'''
 
 
 #Pygame init
@@ -53,11 +59,12 @@ while running:
 
     pygame.display.update() #actualitzar per cada frame
     clock.tick(30) #ajustar a 30 FPS
-pygame.quit()'''
+pygame.quit()
+
+'''
 
 
-
-import networkx as nx
+'''import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_pydot import graphviz_layout
 
@@ -72,4 +79,4 @@ pos=graphviz_layout(G,prog="dot")
 
 nx.draw(G, pos, with_labels=True)
 
-plt.show()
+plt.show()'''
