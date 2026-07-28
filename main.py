@@ -7,11 +7,10 @@ from generate.prim_algorithm import algorithm_prim
 from generate.binary_tree import algorithm_binary_tree
 from generate.sidewinder import algorithm_sidewinder
 
-from graph_representation import maze_to_tree_graph
+from graph_representation import maze_to_tree_graph1, maze_to_tree_graph2
 
 
-maze=algorithm_sidewinder(20)
-
+maze=algorithm_recursive_backtracker(3)
 
 
 
@@ -25,10 +24,6 @@ gridNumber=len(maze)
 gridSize=height//gridNumber #tamany de cada casella a un tamany enter
 height,width=gridSize*gridNumber, gridSize*gridNumber #ajusta el tamany quitant les vores
 
-
-maze_to_tree_graph(maze)
-
-'''
 
 
 #Pygame init
@@ -61,22 +56,3 @@ while running:
     clock.tick(30) #ajustar a 30 FPS
 pygame.quit()
 
-'''
-
-
-'''import networkx as nx
-import matplotlib.pyplot as plt
-from networkx.drawing.nx_pydot import graphviz_layout
-
-G=nx.Graph()
-
-G.add_edge("A","B")
-G.add_edge("A","C")
-G.add_edge("B","D")
-G.add_edge("A","E")
-
-pos=graphviz_layout(G,prog="dot")
-
-nx.draw(G, pos, with_labels=True)
-
-plt.show()'''
