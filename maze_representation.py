@@ -24,5 +24,9 @@ def numberToColor(n): #Donar a cada nombre un color
             return Color.wall
         case 1:
             return Color.wall
+        case 2:
+            return Color.blue
+        case 3:
+            return Color.yellow
         case _:
             return Color.error

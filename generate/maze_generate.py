@@ -9,9 +9,9 @@ class cell:
         #guardar com a variable si aquest cell és visitat (recursive_backtracker)
         self.visited=False
 
-def change_wall(maze, pos, dir,type):  #donat una posició de una cel·la canvia al tipos type la paret a la direcció dir
+def change_wall(cell_maze, pos, dir,type):  #donat una posició de una cel·la canvia al tipos type la paret a la direcció dir
     x,y=pos
-    cell1,cell2=maze[y][x], maze[y+dir[1]][x+dir[0]]
+    cell1,cell2=cell_maze[y][x], cell_maze[y+dir[1]][x+dir[0]]
     if dir==(0,-1):
         cell1.up=type
         cell2.down=type
@@ -26,7 +26,16 @@ def change_wall(maze, pos, dir,type):  #donat una posició de una cel·la canvia
         cell2.left=type
     else:
         raise Exception("change_wall, direction incorrect") #encara que semble un estupidex, m'ha estalvitat molt temps en debuging
-    return maze
+    return cell_maze
+
+def generate_maze_border(cell_maze):
+    size=len(cell_maze)
+    for i in range(size):
+        cell_maze[0][i].up=1
+        cell_maze[size-1][i].down=1
+        cell_maze[i][0].left=1
+        cell_maze[i][size-1].right=1
+    return cell_maze
 
 def generate_empty_cell_maze(size, initial_wall_state=1): #crear una llista de cel·la   guarda el valor de la part creada per defecte tancada
     cell_maze=[]

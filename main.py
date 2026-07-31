@@ -6,11 +6,13 @@ from generate.recursive_backtracker import algorithm_recursive_backtracker
 from generate.prim_algorithm import algorithm_prim
 from generate.binary_tree import algorithm_binary_tree
 from generate.sidewinder import algorithm_sidewinder
+from generate.recursive_division import algorithm_recursive_division
+from generate.wilson_algorithm import algorithm_wilson
 
 from graph_representation import maze_to_tree_graph1, maze_to_tree_graph2
 
 
-maze=algorithm_recursive_backtracker(3)
+maze=algorithm_wilson(10)
 
 
 
@@ -41,10 +43,12 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running=False
-            if event.key == pygame.K_SPACE: #sicronizar animacion
-                #maze=next(gen)
-                pass
-
+            #if event.key == pygame.K_SPACE: #sicronizar animacion
+            '''else:
+                try:
+                    maze=next(gen)
+                except StopIteration:
+                    pass'''
 
     screen.fill(Color.background) #posar color de fons
 
@@ -53,6 +57,6 @@ while running:
     #drawAuxiliaryLines(screen,gridSize,gridNumber,width,height) #dibuixar graella de auxiliar
 
     pygame.display.update() #actualitzar per cada frame
-    clock.tick(30) #ajustar a 30 FPS
+    clock.tick(240) #ajustar a 30 FPS
 pygame.quit()
 
