@@ -52,7 +52,8 @@ def cell_to_grid(cell_maze):
     for _ in range(size):  #crear una llista de caselles per defecte amb valor -1
         grid_list=[]
         for _ in range(size):
-            grid_list.append(-1)
+            #grid_list.append(-1)
+            grid_list.append(1)
         grid_maze.append(grid_list)
     for y in range(len(cell_maze)):  #pasar de cel·la a graella
         for x in range(len(cell_maze)):

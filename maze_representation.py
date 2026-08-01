@@ -21,7 +21,7 @@ def drawAuxiliaryLines(surface,gridSize,gridNumber,width,height):
 def numberToColor(n): #Donar a cada nombre un color
     match n:
         case -1:
-            return Color.wall
+            return Color.error
         case 1:
             return Color.wall
         case 2:
@@ -29,4 +29,4 @@ def numberToColor(n): #Donar a cada nombre un color
         case 3:
             return Color.yellow
         case _:
-            return Color.error
+            raise Exception("maze_representation error, can determinat n") 
