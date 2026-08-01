@@ -1,5 +1,5 @@
 import pygame
-import Color as Color
+import config
 
 def drawGrid(surface,maze,gridSize,gridNumber):
     for y in range(gridNumber): #dibuixar totes les caselles
@@ -9,24 +9,24 @@ def drawGrid(surface,maze,gridSize,gridNumber):
                 color=numberToColor(n)
                 pygame.draw.rect(surface,color,(x*gridSize,y*gridSize,gridSize,gridSize))
     #sobremarcar les sortides
-    pygame.draw.rect(surface,Color.star,(1*gridSize,0*gridSize,gridSize,gridSize))
-    pygame.draw.rect(surface,Color.exit,((gridNumber-2)*gridSize,(gridNumber-1)*gridSize,gridSize,gridSize))
+    pygame.draw.rect(surface,config.Color.star,(1*gridSize,0*gridSize,gridSize,gridSize))
+    pygame.draw.rect(surface,config.Color.exit,((gridNumber-2)*gridSize,(gridNumber-1)*gridSize,gridSize,gridSize))
 
-def drawAuxiliaryLines(surface,gridSize,gridNumber,width,height):
+def drawAuxiliaryLines(surface,gridSize,gridNumber,windows_size):
     for i in range(1,gridNumber): #dibuixar graella de auxiliar
-        pygame.draw.line(surface, Color.line, (i*gridSize, 0), (i*gridSize, height), 1)
-        pygame.draw.line(surface, Color.line, (0,i*gridSize), (width,i*gridSize), 1)
+        pygame.draw.line(surface, config.Color.line, (i*gridSize, 0), (i*gridSize, windows_size), 1)
+        pygame.draw.line(surface, config.Color.line, (0,i*gridSize), (windows_size,i*gridSize), 1)
 
 
 def numberToColor(n): #Donar a cada nombre un color
     match n:
         case -1:
-            return Color.error
+            return config.Color.error
         case 1:
-            return Color.wall
+            return config.Color.wall
         case 2:
-            return Color.blue
+            return config.Color.blue
         case 3:
-            return Color.yellow
+            return config.Color.yellow
         case _:
             raise Exception("maze_representation error, can determinat n") 
