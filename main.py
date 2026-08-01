@@ -1,6 +1,6 @@
 import pygame
-import Color
-from maze_representation import drawGrid, drawAuxiliaryLines
+import Color as Color
+from representation.maze_representation import drawGrid, drawAuxiliaryLines
 
 from generate.recursive_backtracker import algorithm_recursive_backtracker
 from generate.prim_algorithm import algorithm_prim
@@ -9,7 +9,7 @@ from generate.sidewinder import algorithm_sidewinder
 from generate.recursive_division import algorithm_recursive_division
 from generate.wilson_algorithm import algorithm_wilson
 
-from graph_representation import maze_to_tree_graph1, maze_to_tree_graph2
+from representation.graph_representation import maze_to_tree_graph1, maze_to_tree_graph2
 
 
 maze=algorithm_wilson(10)
@@ -54,7 +54,7 @@ while running:
 
     drawGrid(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
     
-    #drawAuxiliaryLines(screen,gridSize,gridNumber,width,height) #dibuixar graella de auxiliar
+    drawAuxiliaryLines(screen,gridSize,gridNumber,width,height) #dibuixar graella de auxiliar
 
     pygame.display.update() #actualitzar per cada frame
     clock.tick(240) #ajustar a 30 FPS

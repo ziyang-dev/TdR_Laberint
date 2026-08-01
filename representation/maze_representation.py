@@ -1,5 +1,5 @@
 import pygame
-import Color
+import Color as Color
 
 def drawGrid(surface,maze,gridSize,gridNumber):
     for y in range(gridNumber): #dibuixar totes les caselles
