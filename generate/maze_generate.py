@@ -26,7 +26,6 @@ def change_wall(cell_maze, pos, dir,type):  #donat una posició de una cel·la c
         cell2.left=type
     else:
         raise Exception("change_wall, direction incorrect") #encara que semble un estupidex, m'ha estalvitat molt temps en debuging
-    return cell_maze
 
 def generate_maze_border(cell_maze):
     size=len(cell_maze)
@@ -35,7 +34,6 @@ def generate_maze_border(cell_maze):
         cell_maze[size-1][i].down=1
         cell_maze[i][0].left=1
         cell_maze[i][size-1].right=1
-    return cell_maze
 
 def generate_empty_cell_maze(size, initial_wall_state=1): #crear una llista de cel·la   guarda el valor de la part creada per defecte tancada
     cell_maze=[]

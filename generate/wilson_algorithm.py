@@ -35,7 +35,7 @@ def algorithm_wilson(size):
         if maze[pos[1]][pos[0]].visited==True:  #si trova una cel·la visitada
             for pos1, pos2 in zip(pos_list_walk, pos_list_walk[1:]):
                 n_dir=(pos2[0]-pos1[0],pos2[1]-pos1[1])
-                maze=change_wall(maze,pos1,n_dir,0)
+                change_wall(maze,pos1,n_dir,0)
                 maze[pos1[1]][pos1[0]].visited=True
                 unvisited_list.remove(pos1)
             pos_list_walk.clear()

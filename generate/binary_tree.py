@@ -15,9 +15,9 @@ def algorithm_binary_tree(size):
                     pass
                 else:
                     pos=x,y
-                    maze=change_wall(maze, pos, dir, 0)
+                    change_wall(maze, pos, dir, 0)
                     break
 
     maze=cell_to_grid(maze) #pasar de cel·la a graella
-    maze[1][1]=2 #marcar el punt d'origen (no serveix per a res...)
+    #maze[1][1]=2 #marcar el punt d'origen (no serveix per a res...)
     return maze 

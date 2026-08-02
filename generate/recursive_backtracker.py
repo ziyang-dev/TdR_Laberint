@@ -18,7 +18,7 @@ def algorithm_recursive_backtracker(size):
             if x+d1>=size or x+d1<0 or y+d2>=size or y+d2<0:  #evitar que vagi fora del laberint
                 pass
             elif not maze[y+d2][x+d1].visited:  #si la cel·la no està visitada, visitala i tranca la paret entre mig
-                maze=change_wall(maze, pos, dir, 0)
+                change_wall(maze, pos, dir, 0)
                 pos=(x+d1,y+d2)
                 pos_list.append(pos)
                 maze[pos[1]][pos[0]].visited=True  #asistir que la cel·la està visitada
@@ -29,5 +29,5 @@ def algorithm_recursive_backtracker(size):
                 pos=pos_list[-1]
 
     maze=cell_to_grid(maze) #pasar de cel·la a graella
-    maze[pos_init[1]*2+1][pos_init[0]*2+1]=2 #marcar el punt d'origen (no serveix per a res...)
+    #maze[pos_init[1]*2+1][pos_init[0]*2+1]=2 #marcar el punt d'origen (no serveix per a res...)
     return maze

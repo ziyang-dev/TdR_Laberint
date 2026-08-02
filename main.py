@@ -23,9 +23,9 @@ def animate_next():
         pass
 
 gen=None
-maze=algorithm_recursive_division(config.Maze_size.medium)
-maze_copy=copy.deepcopy(maze)
-maze=add_list_to_maze(maze, algorithm_DFS(maze,config.start_pos, config.exit_pos, config.direction), 3)
+maze=algorithm_wilson(config.Maze_size.small)
+#maze_copy=copy.deepcopy(maze)
+#maze=add_list_to_maze(maze, algorithm_DFS(maze,config.start_pos, config.exit_pos, config.direction), 3)
 
 
 
