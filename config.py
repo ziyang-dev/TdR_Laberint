@@ -20,7 +20,9 @@ class Maze_size:
     extra=              500
 
 #research
-direction=[(1,0), (0,1), (-1,0), (0,-1)]
+direction=((1,0), (0,1), (-1,0), (0,-1))
+start_pos=(1,1)
+exit_pos=(-2,-2)
 
 #main
 windowsCaptionText="Debug"  #Nom de finestres

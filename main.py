@@ -1,6 +1,10 @@
 import pygame
 import config
-from representation.maze_representation import drawGrid, drawAuxiliaryLines
+import copy
+
+from representation.maze_representation import drawGrid, drawAuxiliaryLines, add_list_to_maze
+from representation.graph_representation import maze_to_tree_graph1, maze_to_tree_graph2
+
 
 from generate.recursive_backtracker import algorithm_recursive_backtracker
 from generate.prim_algorithm import algorithm_prim
@@ -9,11 +13,19 @@ from generate.sidewinder import algorithm_sidewinder
 from generate.recursive_division import algorithm_recursive_division
 from generate.wilson_algorithm import algorithm_wilson
 
-from representation.graph_representation import maze_to_tree_graph1, maze_to_tree_graph2
+from research.DFS import algorithm_DFS
+
+def animate_next():
+    global maze
+    try:
+        maze=next(gen)
+    except StopIteration:
+        pass
 
 gen=None
-maze=algorithm_wilson(10)
-
+maze=algorithm_recursive_division(config.Maze_size.medium)
+maze_copy=copy.deepcopy(maze)
+maze=add_list_to_maze(maze, algorithm_DFS(maze,config.start_pos, config.exit_pos, config.direction), 3)
 
 
 
@@ -23,12 +35,7 @@ gridSize=config.windows_size//gridNumber #tamany de cada casella a un tamany ent
 config.windows_size=gridSize*gridNumber #ajusta el tamany quitant les vores
 
 
-def animate_next():
-    global maze
-    try:
-        maze=next(gen)
-    except StopIteration:
-        pass
+
 
 
 #Pygame init
