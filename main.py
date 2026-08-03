@@ -15,6 +15,7 @@ from generate.wilson_algorithm import algorithm_wilson
 
 from research.DFS import algorithm_DFS
 from research.BFS import algorithm_BFS
+from research.A_star import algorithm_A_star 
 
 def animate_next():
     global maze
@@ -26,8 +27,8 @@ def animate_next():
 gen=None
 maze=algorithm_wilson(config.Maze_size.small)
 maze_copy=copy.deepcopy(maze)
-add_list_to_maze(maze, algorithm_BFS(maze_copy,config.start_pos, config.exit_pos, config.direction), 3)
-#gen=algorithm_BFS(maze,config.start_pos, config.exit_pos, config.direction)
+add_list_to_maze(maze, algorithm_A_star(maze_copy,config.start_pos, config.exit_pos, config.direction), 3)
+#gen=algorithm_A_star(maze,config.start_pos, config.exit_pos, config.direction)
 
 
 #calculs d'altres constants

@@ -30,6 +30,6 @@ windows_size=600 # tamany de la pantalla, quadrat
 
 with_auxiliary_line=True
 
-animation_type="off"  #["off","click","atuo"]
+animation_type="off"  #["off","click","auto"]
 
 ticks=30
