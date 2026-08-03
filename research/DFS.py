@@ -2,10 +2,10 @@ def algorithm_DFS(maze,start_pos, exit_pos, direction):
     stack = [start_pos]
     maze[start_pos[1]][start_pos[0]] = 1
     size = len(maze)
-    exit_pos = (
-        size + exit_pos[0],
-        size + exit_pos[1]
-    )
+    exit_pos_x = size + exit_pos[0]
+    exit_pos_y = size + exit_pos[1]
+    if start_pos==(exit_pos_x,exit_pos_y):
+        return stack
     append = stack.append
     pop = stack.pop
     while stack:
@@ -17,13 +17,11 @@ def algorithm_DFS(maze,start_pos, exit_pos, direction):
             if row[x]!=1:
                 row[x]=1
                 append((x,y))
-                if (x,y)==exit_pos:
+                if x==exit_pos_x and y==exit_pos_y:
                     return stack
                 break
         else:
             pop()
-            if not stack:
-                break
     return stack
 
     '''maze1 = [row[:] for row in maze]

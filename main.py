@@ -14,6 +14,7 @@ from generate.recursive_division import algorithm_recursive_division
 from generate.wilson_algorithm import algorithm_wilson
 
 from research.DFS import algorithm_DFS
+from research.BFS import algorithm_BFS
 
 def animate_next():
     global maze
@@ -24,9 +25,9 @@ def animate_next():
 
 gen=None
 maze=algorithm_wilson(config.Maze_size.small)
-#maze_copy=copy.deepcopy(maze)
-#maze=add_list_to_maze(maze, algorithm_DFS(maze,config.start_pos, config.exit_pos, config.direction), 3)
-
+maze_copy=copy.deepcopy(maze)
+add_list_to_maze(maze, algorithm_BFS(maze_copy,config.start_pos, config.exit_pos, config.direction), 3)
+#gen=algorithm_BFS(maze,config.start_pos, config.exit_pos, config.direction)
 
 
 #calculs d'altres constants

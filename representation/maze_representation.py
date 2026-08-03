@@ -37,4 +37,3 @@ def numberToColor(n): #Donar a cada nombre un color
 def add_list_to_maze(maze,list,type):
     for pos in list:
         maze[pos[1]][pos[0]]=type
-    return maze
