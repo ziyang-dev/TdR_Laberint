@@ -13,6 +13,9 @@ from generate.sidewinder import algorithm_sidewinder
 from generate.recursive_division import algorithm_recursive_division
 from generate.wilson_algorithm import algorithm_wilson
 
+from generate.braid_maze import braid_maze_break_wall_method, braid_maze_generate_wall_method
+from generate.disconnected_maze import disconnected_maze
+
 from research.DFS import algorithm_DFS
 from research.BFS import algorithm_BFS
 from research.A_star import algorithm_A_star 
@@ -25,9 +28,11 @@ def animate_next():
         pass
 
 gen=None
-maze=algorithm_wilson(config.Maze_size.small)
-maze_copy=copy.deepcopy(maze)
-add_list_to_maze(maze, algorithm_A_star(maze_copy,config.start_pos, config.exit_pos, config.direction), 3)
+maze=disconnected_maze(config.Maze_size.medium)
+#print(maze)
+
+#maze_copy=copy.deepcopy(maze)
+#add_list_to_maze(maze, algorithm_A_star(maze_copy,config.start_pos, config.exit_pos, config.direction), 3)
 #gen=algorithm_A_star(maze,config.start_pos, config.exit_pos, config.direction)
 
 
