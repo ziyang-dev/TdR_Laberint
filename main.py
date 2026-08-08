@@ -14,7 +14,7 @@ from generate.recursive_division import algorithm_recursive_division
 from generate.wilson_algorithm import algorithm_wilson
 
 from generate.braid_maze import braid_maze_break_wall_method, braid_maze_generate_wall_method
-from generate.disconnected_maze import disconnected_maze
+from generate.unsolvablem_maze import unsolvablem_maze
 
 from research.DFS import algorithm_DFS
 from research.BFS import algorithm_BFS
@@ -28,7 +28,7 @@ def animate_next():
         pass
 
 gen=None
-maze=disconnected_maze(config.Maze_size.medium)
+maze=unsolvablem_maze(config.Maze_size.medium)
 #print(maze)
 
 #maze_copy=copy.deepcopy(maze)

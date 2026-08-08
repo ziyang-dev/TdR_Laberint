@@ -4,7 +4,7 @@ import config
 from generate.wilson_algorithm import algorithm_wilson
 from research.A_star import algorithm_A_star
 
-def disconnected_maze(size):
+def unsolvablem_maze(size):
     maze=algorithm_wilson(size)
     path=algorithm_A_star(copy.deepcopy(maze),config.start_pos,config.exit_pos,config.direction)
     x,y=1,1
