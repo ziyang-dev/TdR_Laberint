@@ -28,7 +28,7 @@ def animate_next():
         pass
 
 gen=None
-maze=unsolvablem_maze(config.Maze_size.medium)
+maze=braid_maze_generate_wall_method(config.Maze_size.medium)
 #print(maze)
 
 #maze_copy=copy.deepcopy(maze)

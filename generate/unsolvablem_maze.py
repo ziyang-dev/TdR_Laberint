@@ -11,5 +11,5 @@ def unsolvablem_maze(size):
     while x%2!=0 and y%2!=0:
         x,y=random.choice(path)
         print(1)
-    maze[y][x]=-1
+    maze[y][x]=1
     return maze
