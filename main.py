@@ -1,6 +1,8 @@
+#region imports
 import pygame
 import config
 import copy
+import numpy as np
 
 from representation.maze_representation import drawGrid, drawAuxiliaryLines, add_list_to_maze
 from representation.graph_representation import maze_to_tree_graph1, maze_to_tree_graph2
@@ -20,6 +22,15 @@ from research.DFS import algorithm_DFS
 from research.BFS import algorithm_BFS
 from research.A_star import algorithm_A_star 
 
+from maze_storage import save_maze, load_maze
+class storage:
+    category =      "perfect"
+    algorithm =     "recursive_backtracker"
+    size =          "small"
+    number =        1
+
+#endregion
+
 def animate_next():
     global maze
     try:
@@ -28,8 +39,10 @@ def animate_next():
         pass
 
 gen=None
-maze=braid_maze_generate_wall_method(config.Maze_size.medium)
-#print(maze)
+#maze=algorithm_recursive_backtracker(config.Maze_size.small)
+#save_maze(maze,storage.category,storage.algorithm,storage.size,storage.number)
+maze = load_maze(storage.category, storage.algorithm, storage.size, storage.number)
+print(maze)
 
 #maze_copy=copy.deepcopy(maze)
 #add_list_to_maze(maze, algorithm_A_star(maze_copy,config.start_pos, config.exit_pos, config.direction), 3)
