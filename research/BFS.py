@@ -30,6 +30,6 @@ def algorithm_BFS(maze,start_pos, exit_pos, direction):
                     while index>=0:
                         appendleft(queue[index])
                         index=parent[index]
-                    return list(stack)
+                    return list(stack), queue
         index+=1
-    return []
+    return [], queue

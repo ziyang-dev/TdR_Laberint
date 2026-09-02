@@ -30,7 +30,7 @@ def algorithm_A_star(maze,start_pos, exit_pos, direction):
             while index>=0:
                 appendleft(closed_list[index])
                 index=parent[index]
-            return list(stack)
+            return list(stack), closed_list
         g+=1
         for dx,dy in direction:
             x=x0+dx
@@ -41,4 +41,4 @@ def algorithm_A_star(maze,start_pos, exit_pos, direction):
                 row[x]=-g
                 counter+=1
                 heapq_push(open_list,(int(abs(exit_pos_x-x)+abs(exit_pos_y-y)+g),counter,g,x,y,index))
-    return[]
+    return[], closed_list

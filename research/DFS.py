@@ -14,15 +14,15 @@ def algorithm_DFS(maze,start_pos, exit_pos, direction):
             x=x0+dx
             y=y0+dy
             row=maze[y]
-            if row[x]!=1:
-                row[x]=1
+            if row[x]==0:
+                row[x]=-1
                 append((x,y))
                 if x==exit_pos_x and y==exit_pos_y:
-                    return stack
+                    return stack, maze
                 break
         else:
             pop()
-    return stack
+    return stack, maze
 
     '''maze1 = [row[:] for row in maze]
         for n in stack:
