@@ -22,9 +22,11 @@ from research.DFS import algorithm_DFS
 from research.BFS import algorithm_BFS
 from research.A_star import algorithm_A_star 
 
-from data_manager import save_maze, load_maze, print_maze_info, load_run_info, print_run_info, save_run_info
+from data_manager import save_maze, load_maze, print_maze_info, load_run_id, print_run_info, save_run_info
 
 from data_collector import collect_data, repeat_collection
+
+from runs_info_safety import verify_runs_safety
 
 #endregion
 
@@ -36,22 +38,33 @@ def animate_next():
         pass
 
 gen=None
+
+'''id_list=[]
+star_id=1
+end_id=100
+for gen in [1]:
+    for size in [1]:
+        for id in range(star_id,end_id+1):
+            id_list.append(f"M{gen}{size}{id:05d}")
+del star_id,end_id,gen,size,id
+'''
+
+#for maze_id in id_list:
+#    maze =algorithm_recursive_backtracker(config.Maze_size.small)
+#    save_maze(maze,maze_id)
 maze_id="M1100001"
+maze, optimal_path_lenght = load_maze(maze_id)
 
-#maze =algorithm_recursive_backtracker(config.Maze_size.medium)
-#save_maze(maze,maze_id)
-maze = load_maze(maze_id)
-
-maze_copy=copy.deepcopy(maze)
-path, explored_node = algorithm_BFS(maze_copy,config.start_pos, config.exit_pos, config.direction)
 #add_list_to_maze(maze, path, 3)
 #gen=algorithm_A_star(maze,config.start_pos, config.exit_pos, config.direction)
 
-#repeat_collection("M1200001","M1200100","all")
-collect_data(maze_id, "DFS",len(path)-1)
+#repeat_collection(id_list,"DFS",5)
 
-#load_run_info(config.runs_path, "memory_peak","0.0553131103515625")
+#collect_data(maze_id, "BFS")
 
+#print_run_info(load_run_id(vertices_explored=28,is_optimal=1))
+
+print(verify_runs_safety())
 
 
 #calculs d'altres constants

@@ -1,9 +1,11 @@
 from pathlib import Path
 import numpy as np
 import config
+import copy
 import csv
 
 from config import DATA_DIR, MAZE_DIR, RUN_DIR, runs_path
+from research.BFS import algorithm_BFS
 
 #import sys
 #sys.stdout = open("output.txt", "w", encoding="utf-8")
@@ -28,12 +30,17 @@ def save_maze(maze, maze_id):
     path = folder / f"{maze_id}.npy"
     if path.exists():
         raise FileExistsError(f"Maze ID '{maze_id}' already exists.")
-    np.save(path, np.array(maze, dtype=np.uint8))
+    optimal_path, _=algorithm_BFS(copy.deepcopy(maze),config.start_pos,config.exit_pos,config.direction)
+    optimal_path_lenght=len(optimal_path)-1
+    data={"maze":np.array(maze,dtype=np.uint8),"optimal_path_lenght":optimal_path_lenght}
+    np.save(path, data)
 
 def load_maze(maze_id):
     path =  information_to_folder(maze_id_manager(maze_id)) / f"{maze_id}.npy"
-    maze = np.load(path).tolist()
-    return maze
+    data = np.load(path, allow_pickle=True).item()
+    maze = data["maze"].tolist()
+    optimal_path_lenght = data["optimal_path_lenght"]
+    return maze, optimal_path_lenght
 
 def print_maze_info(maze_id):
     _, maze_category, maze_generate_algorithm, maze_size = maze_id_manager(maze_id)
@@ -41,13 +48,13 @@ def print_maze_info(maze_id):
     Generator: {maze_generate_algorithm}
     Size: {maze_size}''')
 
-def save_run_info(path,experiment_id, maze_id, solver_algorithm, is_solved,
+def save_run_info(experiment_id, maze_id, solver_algorithm, is_solved,
                   execution_time, vertices_explored, path_length, is_optimal, memory_peak):
-    with open(path, "r", newline="", encoding="utf-8") as file:
+    with open(runs_path, "r", newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
         rows = list(reader)
     run_id=int(rows[-1]["run_id"])+1
-    with open(path, "a", newline="", encoding="utf-8") as file:
+    with open(runs_path, "a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow([
             run_id,
@@ -59,28 +66,53 @@ def save_run_info(path,experiment_id, maze_id, solver_algorithm, is_solved,
             vertices_explored,
             path_length,
             is_optimal,
-            memory_peak
+            memory_peak,
+            "U"
             ])
 
-def load_run_info(path,key=False,value=False):
-    with open(path, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        row_list=[]
-        if value:
-            for row in reader:
-                if row[key] == value:
-                    row_list.append(row)
-        else:
-            return reader
-    return row_list
 
-def print_run_info(row_list):
+def load_run_id(**conditions):
+    with open(runs_path, "r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+
+        return [
+            int(row["run_id"])
+            for row in reader
+            if all(row[key] == str(value)
+                   for key, value in conditions.items())
+        ]
+
+def load_determined_run_info(run_id, *info_types):
+    with open(runs_path, "r", newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        rows=list(reader)
+        if run_id!=int(rows[run_id]["run_id"]):
+            print(run_id,rows[run_id]["run_id"])
+            raise Exception ("run_id is not the same at runs.csv")
+        result=[]
+        for info_type in info_types:
+            result.append(rows[run_id][info_type])
+        if len(result)==1:
+            result=result[0]
+        return result
+
+def print_run_info(run_id_list):
+    row_list=[]
+    with open(runs_path, "r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            rows=list(reader)
+            for run_id in run_id_list:
+                run_id=int(run_id)
+                if run_id!=int(rows[run_id]["run_id"]):
+                    print(run_id,rows[run_id]["run_id"])
+                    raise Exception ("run_id is not the same at runs.csv")
+                row_list.append(rows[run_id])
     for row in row_list:
         print(f'''    Run id: {row["run_id"]}
     Experiment id: {row["experiment_id"]}
     Maze id: {row["maze_id"]}''')
-    print_maze_info(row["maze_id"])
-    print(f'''    Solver algorithm: {row["solver_algorithm"]}
+        print_maze_info(row["maze_id"])
+        print(f'''    Solver algorithm: {row["solver_algorithm"]}
     Is solved: {row["is_solved"]}
     Execution time: {row["execution_time"]} ms
     Vertices explored: {row["vertices_explored"]}

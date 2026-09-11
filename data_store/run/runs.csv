@@ -1,2 +1,2 @@
-run_id,experiment_id,maze_id,solver_algorithm,is_solved,execution_time,vertices_explored,path_length,is_optimal,memory_peak
+run_id,experiment_id,maze_id,solver_algorithm,is_solved,execution_time,vertices_explored,path_length,is_optimal,memory_peak,is_outlier
 0
