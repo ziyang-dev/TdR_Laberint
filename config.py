@@ -14,11 +14,14 @@ class Color:  #color of maze
     purple=             (185, 130, 255)     #purple
 
 
-class Maze_size:
-    small=              5
-    medium=             25
-    large=              50
-    extra_large=        500
+maze_size_int={
+    "extra_small":        5,
+    "small":              10,
+    "medium":             20,
+    "large":              40,
+    "extra_large":        80,
+    "especial_large":     500
+}
 
 #research
 direction=((1,0), (0,1), (-1,0), (0,-1))
@@ -39,10 +42,12 @@ maze_category={
 }
 
 maze_size={
-    "1": "small",
-    "2": "medium",
-    "3": "large",
-    "4": "extra_large"
+    "1": "extra_small",
+    "2": "small",
+    "3": "medium",
+    "4": "large",
+    "5": "extra_large",
+    "6": "especial_large"
 }
 
 
@@ -54,9 +59,10 @@ runs_label={
     "is_solved": "És resolt?",
     "execution_time": "Temps d'execució",
     "vertices_explored": "Caselles explorades",
-    "path_length": "Longitud del camí",
+    "movement_steps": "Nombre de moviments",
     "is_optimal": "És òptim?",
-    "memory_peak": "Pic de memòria"
+    "memory_peak": "Pic de memòria",
+    "maze_size": "ERROR"
 }
 
 runs_unit_label={
@@ -67,9 +73,10 @@ runs_unit_label={
     "is_solved": "bool",
     "execution_time": "ms",
     "vertices_explored": "casella/es",
-    "path_length": "casella/es",
+    "movement_steps": "casella/es",
     "is_optimal": "bool",
-    "memory_peak": "MB"
+    "memory_peak": "MiB",
+    "maze_size": "caselles/es"
 }
 
 generator_algorithm_label={
@@ -102,6 +109,6 @@ windows_size=600 # tamany de la pantalla, quadrat
 
 with_auxiliary_line=True
 
-animation_type="off"  #["off","click","auto"]
+animation_type="click"  #["off","click","auto"]
 
 ticks=30

@@ -1,0 +1,55 @@
+import pygame
+import config
+
+from representation.maze_representation import drawGrid, drawAuxiliaryLines, add_list_to_maze
+
+def animate_maze_generation(gen):
+    maze=next(gen)
+    def animate_next():
+        nonlocal maze
+        try:
+            maze=next(gen)
+        except StopIteration:
+            pass
+
+    #calculs d'altres constants
+    gridNumber=len(maze)
+    gridSize=config.windows_size//gridNumber #tamany de cada casella a un tamany enter
+    config.windows_size=gridSize*gridNumber #ajusta el tamany quitant les vores
+
+
+    #Pygame init
+    pygame.init()
+    screen = pygame.display.set_mode((config.windows_size,config.windows_size))
+    pygame.display.set_caption(config.windowsCaptionText)
+    running = True
+    clock = pygame.time.Clock()
+
+    while running:
+        #Teclats per sortir
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running=False
+                #if event.key == pygame.K_SPACE: #sicronizar animacion
+                else:
+                    if config.animation_type=="click":
+                        animate_next()
+
+        if config.animation_type=="auto":
+            animate_next()
+        
+        screen.fill(config.Color.background) #posar color de fons
+
+        drawGrid(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
+
+        if config.with_auxiliary_line:
+            drawAuxiliaryLines(screen,gridSize,gridNumber,config.windows_size) #dibuixar graella de auxiliar
+
+        pygame.display.update() #actualitzar per cada frame
+        clock.tick(config.ticks) #ajustar a 30 FPS
+    pygame.quit()
+    return
+

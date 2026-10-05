@@ -31,6 +31,10 @@ def numberToColor(n): #Donar a cada nombre un color
             return config.Color.blue
         case 3:
             return config.Color.yellow
+        case 4:
+            return config.Color.gren
+        case 5:
+            return config.Color.purple
         case _:
             raise Exception("maze_representation error, can determinat n") 
 

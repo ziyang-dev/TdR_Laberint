@@ -2,6 +2,7 @@ import time
 import config
 import copy
 import tracemalloc
+import gc
 
 from research.DFS import algorithm_DFS
 from research.BFS import algorithm_BFS
@@ -21,13 +22,16 @@ def collect_data(maze_id, search):
         case _:
             raise("search_algorithm not found")
     maze_copy=copy.deepcopy(maze)
-    time.sleep(0.01)  #time for cool-down
+    time.sleep(0.05)  #time for cool-down
+    gc.collect()
+    gc.disable()
     tracemalloc.start()
     start_time=time.perf_counter()
     path, list_explored_node = search_algorithm(maze_copy,config.start_pos, config.exit_pos, config.direction)
     end_time=time.perf_counter()
     current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
+    gc.enable()
     execution_time=(end_time-start_time)*1000  #in ms
 
     match search:
@@ -44,15 +48,15 @@ def collect_data(maze_id, search):
                 raise Exception("search_algorithm not found")
 
     is_solved="1" if path!=[] else "0"
-    path_length = "---" if path==[] else len(path)-1
+    movement_steps = "---" if path==[] else len(path)-1
     is_optimal = "1" if optimal_path_lenght == len(path)-1 else "0"
-    memory_peak = peak / (1024 * 1024)  #in MB
+    memory_peak = peak / (1024 * 1024)  #in MiB
     save_run_info(config.exprtiment_id, maze_id, search, is_solved, execution_time, len_explored_node,
-                  path_length, is_optimal, memory_peak)
+                  movement_steps, is_optimal, memory_peak)
     
 
 def repeat_collection(id_list, search, times=1):  #els id tenen que ser del mateix category i size (encluint stard and end id)
-    for _ in times:
+    for _ in range(times):
         for maze_id in id_list:
             if search=="all":
                 collect_data(maze_id,"DFS")

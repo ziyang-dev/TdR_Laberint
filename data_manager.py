@@ -49,7 +49,7 @@ def print_maze_info(maze_id):
     Size: {maze_size}''')
 
 def save_run_info(experiment_id, maze_id, solver_algorithm, is_solved,
-                  execution_time, vertices_explored, path_length, is_optimal, memory_peak):
+                  execution_time, vertices_explored, movement_steps, is_optimal, memory_peak):
     with open(runs_path, "r", newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
         rows = list(reader)
@@ -64,9 +64,11 @@ def save_run_info(experiment_id, maze_id, solver_algorithm, is_solved,
             is_solved,
             execution_time,
             vertices_explored,
-            path_length,
+            movement_steps,
             is_optimal,
             memory_peak,
+            maze_id[1],
+            maze_id[2],
             "U"
             ])
 
@@ -116,7 +118,8 @@ def print_run_info(run_id_list):
     Is solved: {row["is_solved"]}
     Execution time: {row["execution_time"]} ms
     Vertices explored: {row["vertices_explored"]}
-    Path length: {row["path_length"]}
+    Movement steps: {row["movement_steps"]}
     Is optimal: {row["is_optimal"]}
     Memory peak: {row["memory_peak"]} MB
+    Is outlier: {row["is_outlier"]}
     ''')

@@ -6,40 +6,32 @@ from statsmodels.nonparametric.smoothers_lowess import lowess
 from data_manager import load_determined_run_info, load_maze
 
 def int_or_float(valor):
-    try:
-        return int(valor)
-    except ValueError:
-        return float(valor)
+    num = float(valor)
+    return int(num) if num.is_integer() else num
 
 def divide_by_category(run_id_list,category,*info_types):
     maze_dict={}
-    if category=="maze_category":
-        for run_id in run_id_list:
-            category_info, *info=load_determined_run_info(run_id,"maze_id",*info_types)
-            if isinstance(info,list):
-                result=[int_or_float(n) for n in info]
-            else:
-                result=int_or_float(info)
-            category_info=config.maze_category[category_info[1]][1]
-            maze_dict.setdefault(category_info, []).append(result)
-    else:
-        for run_id in run_id_list:
-            category_info, *info=load_determined_run_info(run_id,category,*info_types)
-            if len(info)==1:
-                info=info[0]
-            if isinstance(info,list):
-                result=[int_or_float(n) for n in info]
-            else:
-                result=int_or_float(info)
-            maze_dict.setdefault(category_info, []).append(result)
+    for run_id in run_id_list:
+        category_info, *info=load_determined_run_info(run_id,category,*info_types)
+        if len(info)==1:
+            info=info[0]
+        if isinstance(info,list):
+            result=[int_or_float(n) for n in info]
+        else:
+            result=int_or_float(info)
+        if category=="maze_category":
+            category_info=config.maze_category[category_info][1]
+        elif category=="maze_size":
+            category_info=config.maze_size[category_info]
+        maze_dict.setdefault(category_info, []).append(result)
     return maze_dict
 
 def mean_dict_inplace(data_dict):  #dict_type={"key":[folat_list]}
     for key,values in data_dict.items():
         if isinstance(values[0], list):
-            data_dict[key] = np.mean(values, axis=0).tolist()
+            data_dict[key] = [int_or_float(n) for n in np.mean(values, axis=0)]
         else:
-            data_dict[key] = np.mean(values)
+            data_dict[key] = int_or_float(np.mean(values))
 
 def draw_grid(ax):
     ax.grid(axis='both', linestyle='-.', alpha=0.3)
@@ -232,7 +224,7 @@ def chart_9gen3sol1size1info_heap(runs_id_list, info_type,  *, title="Chart type
     plt.tight_layout()
     plt.show()
 
-def chart_9gen1sol1size1info_bar(runs_id_list, info_type,  *, title="Chart type: chart_9gen1sol1size1info_bar"):
+def chart_9gen1sol1size1info_bar(runs_id_list, info_type, *, title="Chart type: chart_9gen1sol1size1info_bar"):
 
     maze_dict=divide_by_category(runs_id_list,"maze_category",info_type)
     mean_dict_inplace(maze_dict)
@@ -276,7 +268,7 @@ def chart_1gen1sol1size1info_optim_pie(runs_id_list,  *, title="Chart type: char
     mean_list=[0,0]
 
     for run_id in runs_id_list:
-        is_optimal,path_len,maze_id=load_determined_run_info(run_id,"is_optimal","path_length","maze_id")
+        is_optimal,path_len,maze_id=load_determined_run_info(run_id,"is_optimal","movement_steps","maze_id")
         if int(is_optimal):
             maze_dict[-1]=maze_dict.setdefault(-1, 0) + 1
         else:
@@ -367,11 +359,114 @@ def chart_1gen1sol1size2info_ver_time(runs_id_list,  *, title="Chart type: chart
     plt.tight_layout()
     plt.show()
 
-'''
+def chart_1gen3sol5size1info_oldV(runs_id_list, info_type, *, title="Chart type: chart_1gen3sol5size1info"):
+    maze_dict=divide_by_category(runs_id_list,"solver_algorithm","run_id")
+    for key,valor in maze_dict.items():
+        maze_dict[key]=divide_by_category(valor,"maze_id","maze_size",info_type)
+        mean_dict_inplace(maze_dict[key])
+
+    fig, ax = plt.subplots()
+
+    ax.set_xlabel(f"{config.runs_label['maze_size']} ({config.runs_unit_label['maze_size']}) ({len(runs_id_list)} runs)")
+    ax.set_ylabel(f"{config.runs_label[info_type]} ({config.runs_unit_label[info_type]})")
+    ax.set_title(title)
+
+    top_limit=0
+    for sol_key, sol_dict in maze_dict.items():
+        maze_size_list=[]
+        info_list=[]
+
+        for value in sol_dict.values():
+            maze_size_list.append((config.maze_size_int[config.maze_size[str(value[0])]]*2+1)**1)
+            info_list.append(value[1])
+
+        if max(info_list)>top_limit: top_limit=max(info_list)
+
+        result = lowess(info_list, maze_size_list, frac=0.2)
+
+        x_smooth = result[:, 0]
+        y_smooth = result[:, 1]
+
+        match sol_key:
+            case "DFS":
+                color='C0'
+            case "BFS":
+                color='C2'
+            case "A_star":
+                color='C3'
+
+        ax.scatter(maze_size_list, info_list,color=color)
+        ax.plot(x_smooth, y_smooth, color=color,label=sol_key)
+
+
+    ax.set_ylim(bottom=0, top=top_limit*1.1)
+
+    draw_grid(ax)
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
+
+def chart_1gen3sol5size1info(runs_id_list, info_type, *, title="Chart type: chart_1gen3sol5size1info"):
+    maze_dict=divide_by_category(runs_id_list,"solver_algorithm","run_id")
+    for key,valor in maze_dict.items():
+        maze_dict[key]=divide_by_category(valor,"maze_id","maze_size",info_type)
+        mean_dict_inplace(maze_dict[key])
+
+    fig, ax = plt.subplots()
+
+    ax.set_xlabel(f"{config.runs_label['maze_size']} ({config.runs_unit_label['maze_size']}) ({len(runs_id_list)} runs)")
+    ax.set_ylabel(f"{config.runs_label[info_type]} ({config.runs_unit_label[info_type]})")
+    ax.set_title(title)
+
+    top_limit=0
+    for sol_key, sol_dict in maze_dict.items():
+        maze_size_list=[]
+        info_list=[]
+
+        mean_dict={}
+        
+        for value in sol_dict.values():
+            m_size=(config.maze_size_int[config.maze_size[str(value[0])]]*2+1)**1
+            maze_size_list.append(m_size)
+            info_list.append(value[1])
+            mean_dict.setdefault(m_size, []).append(value[1])
+        
+        mean_dict_inplace(mean_dict)
+
+
+        if max(info_list)>top_limit: top_limit=max(info_list)
+
+        x_smooth = []
+        y_smooth = []
+
+        for key, value in mean_dict.items():
+            x_smooth.append(key)
+            y_smooth.append(value)
+            
+        match sol_key:
+            case "DFS":
+                color='C0'
+            case "BFS":
+                color='C2'
+            case "A_star":
+                color='C3'
+
+        ax.scatter(maze_size_list, info_list,color=color)
+        ax.scatter(x_smooth, y_smooth,color=color, marker='x')
+        ax.plot(x_smooth, y_smooth, color=color,label=sol_key)
+
+
+    ax.set_ylim(bottom=0, top=top_limit*1.1)
+
+    draw_grid(ax)
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+'''from data_manager import load_run_id
 ril=[]
-for i in range (448,450+1):
-    if load_determined_run_info(i,"solver_algorithm") !="DFS":
-        continue
-    ril.append(i)
-chart_1gen1sol1size1info_runs(ril,"execution_time")'''
-#run_id,experiment_id,maze_id,solver_algorithm,is_solved,execution_time,vertices_explored,path_length,is_optimal,memory_peak'''
+for i in range(1,6):
+    ril.extend(load_run_id(is_outlier="S", maze_size=str(i)))
+chart_1gen3sol5size1info(ril,"execution_time")'''
+#run_id,experiment_id,maze_id,solver_algorithm,is_solved,execution_time,vertices_explored,movement_steps,is_optimal,memory_peak,maze_category,maze_size,is_outlier

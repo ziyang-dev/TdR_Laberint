@@ -12,7 +12,6 @@ def algorithm_wilson(size):
         for x in range(size):
             unvisited_list.append((x,y))
     pos=(random.choice(unvisited_list)) #init pos finalized
-    initPos=pos
     maze[pos[1]][pos[0]].visited=True
     unvisited_list.remove(pos)
     pos_list_walk=[]  #crear una lista per guardar el stack
@@ -43,3 +42,55 @@ def algorithm_wilson(size):
 
     maze=cell_to_grid(maze) #pasar de cel·la a graella
     return maze
+
+def animation_wilson(size):
+    maze=generate_empty_cell_maze(size)  #generar un laberint cel·la vacis
+    #buscar una cel·la a l'azar per comenzar, guardar la posició i visitarla
+    unvisited_list=[]
+    for y in range(size):
+        for x in range(size):
+            unvisited_list.append((x,y))
+    pos=(random.choice(unvisited_list)) #init pos finalized
+    pos_init=pos
+    maze[pos[1]][pos[0]].visited=True
+    unvisited_list.remove(pos)
+    pos_list_walk=[]  #crear una lista per guardar el stack
+    new_maze=cell_to_grid(maze) #pasar de cel·la a graella
+    new_maze[pos_init[1]*2+1][pos_init[0]*2+1]=4 #marcar el punt d'origen (no serveix per a res...)
+    yield new_maze
+    while unvisited_list:  #repetir fins que no quedi cap casellela sense visitar
+        if not pos_list_walk:
+            pos=random.choice(unvisited_list)
+            pos_list_walk.append(pos)
+            continue  #este continue solo sirve para mellorar la animació, no serveix per res més
+        dir=random.choice(dirList)
+        if pos[0]+dir[0] < 0 or pos[0]+dir[0] >= size or pos[1]+dir[1] < 0 or pos[1]+dir[1] >= size:  #evitar que vagi fora del laberint
+            continue
+        pos=(pos[0]+dir[0],pos[1]+dir[1])
+
+        if pos in pos_list_walk:
+            last_index = len(pos_list_walk) - 1 - pos_list_walk[::-1].index(pos) #Encuentra el índice del último pos (buscando de derecha a izquierda)
+            pos_list_walk = pos_list_walk[:last_index]  # Corta la lista hasta antes de ese índice
+        
+        pos_list_walk.append(pos)
+
+        if maze[pos[1]][pos[0]].visited==True:  #si trova una cel·la visitada
+            for pos1, pos2 in zip(pos_list_walk, pos_list_walk[1:]):
+                n_dir=(pos2[0]-pos1[0],pos2[1]-pos1[1])
+                change_wall(maze,pos1,n_dir,0)
+                maze[pos1[1]][pos1[0]].visited=True
+                unvisited_list.remove(pos1)
+            pos_list_walk.clear()
+        new_maze=cell_to_grid(maze) #pasar de cel·la a graella
+        if pos_list_walk!=[]:
+            new_maze[pos_list_walk[0][1]*2+1][pos_list_walk[0][0]*2+1]=3
+        for i in range(1,len(pos_list_walk)):
+            dy,dx=(pos_list_walk[i-1][1]-pos_list_walk[i][1]),(pos_list_walk[i-1][0]-pos_list_walk[i][0])
+            new_maze[pos_list_walk[i][1]*2+1+dy][pos_list_walk[i][0]*2+1+dx]=3
+            new_maze[pos_list_walk[i][1]*2+1][pos_list_walk[i][0]*2+1]=3
+        new_maze[pos_init[1]*2+1][pos_init[0]*2+1]=4 #marcar el punt d'origen (no serveix per a res...)
+        new_maze[pos[1]*2+1][pos[0]*2+1]=2
+        yield new_maze
+    new_maze=cell_to_grid(maze) #pasar de cel·la a graella
+    yield new_maze
+
