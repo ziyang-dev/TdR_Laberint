@@ -2,9 +2,8 @@ from pathlib import Path
 import numpy as np
 import config
 import copy
-import csv
 
-from config import DATA_DIR, MAZE_DIR, RUN_DIR, runs_path
+from config import DATA_DIR, MAZE_DIR, RUN_DIR, runs_path, connection
 from research.BFS import algorithm_BFS
 
 #import sys
@@ -48,16 +47,29 @@ def print_maze_info(maze_id):
     Generator: {maze_generate_algorithm}
     Size: {maze_size}''')
 
+def creatDB():
+    connection.execute("""
+    CREATE TABLE IF NOT EXISTS runs (
+        run_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        experiment_id TEXT,
+        maze_id TEXT,
+        solver_algorithm TEXT,
+        is_solved INTEGER,
+        execution_time REAL,
+        vertices_explored INTEGER,
+        movement_steps INTEGER,
+        is_optimal INTEGER,
+        memory_peak REAL,
+        maze_category INTEGER,
+        maze_size INTEGER,
+        is_outlier TEXT
+        )
+    """)
+
 def save_run_info(experiment_id, maze_id, solver_algorithm, is_solved,
                   execution_time, vertices_explored, movement_steps, is_optimal, memory_peak):
-    with open(runs_path, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        rows = list(reader)
-    run_id=int(rows[-1]["run_id"])+1
-    with open(runs_path, "a", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow([
-            run_id,
+    connection.execute("""
+        INSERT INTO runs (
             experiment_id,
             maze_id,
             solver_algorithm,
@@ -67,53 +79,61 @@ def save_run_info(experiment_id, maze_id, solver_algorithm, is_solved,
             movement_steps,
             is_optimal,
             memory_peak,
-            maze_id[1],
-            maze_id[2],
-            "U"
-            ])
-
+            maze_category,
+            maze_size,
+            is_outlier
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (experiment_id, maze_id, solver_algorithm, is_solved, execution_time, vertices_explored, movement_steps, is_optimal, memory_peak, maze_id[1], maze_id[2], "U"))
+    connection.commit()
 
 def load_run_id(**conditions):
-    with open(runs_path, "r", encoding="utf-8", newline="") as f:
-        reader = csv.DictReader(f)
-
-        return [
-            int(row["run_id"])
-            for row in reader
-            if all(row[key] == str(value)
-                   for key, value in conditions.items())
-        ]
+    if not conditions:
+        rows = connection.execute(
+            "SELECT run_id FROM runs"
+        ).fetchall()
+    else:
+        where_clause = " AND ".join(f'"{key}" = ?' for key in conditions)
+        sql = f"SELECT run_id FROM runs WHERE {where_clause}"
+        rows = connection.execute(
+            sql,
+            tuple(str(value) for value in conditions.values())
+        ).fetchall()
+    return [row["run_id"] for row in rows]
 
 def load_determined_run_info(run_id, *info_types):
-    with open(runs_path, "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        rows=list(reader)
-        if run_id!=int(rows[run_id]["run_id"]):
-            print(run_id,rows[run_id]["run_id"])
-            raise Exception ("run_id is not the same at runs.csv")
-        result=[]
-        for info_type in info_types:
-            result.append(rows[run_id][info_type])
-        if len(result)==1:
-            result=result[0]
+        row = connection.execute(
+            f"""
+            SELECT {", ".join(info_types)}
+            FROM runs
+            WHERE run_id = ?
+            """,
+            (run_id,)
+        ).fetchone()
+
+        if row is None:
+            raise ValueError(f"run_id {run_id} does not exist")
+
+        result = list(row)
+
+        if len(result) == 1:
+            return result[0]
         return result
 
 def print_run_info(run_id_list):
-    row_list=[]
-    with open(runs_path, "r", newline="", encoding="utf-8") as file:
-            reader = csv.DictReader(file)
-            rows=list(reader)
-            for run_id in run_id_list:
-                run_id=int(run_id)
-                if run_id!=int(rows[run_id]["run_id"]):
-                    print(run_id,rows[run_id]["run_id"])
-                    raise Exception ("run_id is not the same at runs.csv")
-                row_list.append(rows[run_id])
-    for row in row_list:
+    for run_id in run_id_list:
+        run_id = int(run_id)
+
+        row = connection.execute("SELECT * FROM runs WHERE run_id = ?",(run_id,)).fetchone()
+
+        if row is None: raise Exception(f"run_id {run_id} does not exist in runs.db")
+
         print(f'''    Run id: {row["run_id"]}
     Experiment id: {row["experiment_id"]}
     Maze id: {row["maze_id"]}''')
+
         print_maze_info(row["maze_id"])
+
         print(f'''    Solver algorithm: {row["solver_algorithm"]}
     Is solved: {row["is_solved"]}
     Execution time: {row["execution_time"]} ms
@@ -122,4 +142,91 @@ def print_run_info(run_id_list):
     Is optimal: {row["is_optimal"]}
     Memory peak: {row["memory_peak"]} MB
     Is outlier: {row["is_outlier"]}
+
     ''')
+
+def divide_by_category(run_id_list,category,*info_types):
+    maze_dict={}
+    if not run_id_list:
+        return maze_dict
+    columns = [category, *info_types]
+    columns_sql = ", ".join(f'"{column}"' for column in columns)
+    rows = []
+
+    batch_size = 900
+    for start in range(0, len(run_id_list), batch_size):
+        batch = run_id_list[start:start + batch_size]
+        placeholders = ", ".join("?" for _ in batch)
+        sql = f"""
+            SELECT run_id, {columns_sql}
+            FROM runs
+            WHERE run_id IN ({placeholders})
+        """
+        rows.extend(
+            connection.execute(sql, tuple(batch)).fetchall()
+        )
+    
+    rows_by_id = {row["run_id"]: row for row in rows}
+
+    for run_id in run_id_list:
+        row = rows_by_id.get(int(run_id))
+
+        category_info=row[category]
+        info = [row[column] for column in info_types]
+
+        if len(info)==1:
+            info=info[0]
+        if isinstance(info,list):
+            result = [n for n in info]
+        else:
+            result=info
+        
+        if category=="maze_category":
+            category_info=config.maze_category[str(category_info)][1]
+        elif category=="maze_size":
+            category_info=config.maze_size[category_info]
+            
+        maze_dict.setdefault(category_info, []).append(result)
+
+    return maze_dict
+
+
+def convert_to_txt():
+    import csv
+    rows = connection.execute("SELECT * FROM runs").fetchall()
+
+    if rows is None: raise Exception("runs.db is empty")
+
+    with open("output_runinfo.csv", "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow([
+            "run_id",
+            "experiment_id",
+            "maze_id",
+            "solver_algorithm",
+            "is_solved",
+            "execution_time",
+            "vertices_explored",
+            "movement_steps",
+            "is_optimal",
+            "memory_peak",
+            "maze_category",
+            "maze_size",
+            "is_outlier"
+            ])
+        for row in rows:
+            writer.writerow([
+                row["run_id"],
+                row["experiment_id"],
+                row["maze_id"],
+                row["solver_algorithm"],
+                row["is_solved"],
+                row["execution_time"],
+                row["vertices_explored"],
+                row["movement_steps"],
+                row["is_optimal"],
+                row["memory_peak"],
+                str(row["maze_id"])[1],
+                str(row["maze_id"])[2],
+                row["is_outlier"]
+                ])

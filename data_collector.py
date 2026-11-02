@@ -22,13 +22,14 @@ def collect_data(maze_id, search):
         case _:
             raise("search_algorithm not found")
     maze_copy=copy.deepcopy(maze)
-    time.sleep(0.05)  #time for cool-down
     gc.collect()
     gc.disable()
-    tracemalloc.start()
     start_time=time.perf_counter()
     path, list_explored_node = search_algorithm(maze_copy,config.start_pos, config.exit_pos, config.direction)
     end_time=time.perf_counter()
+    maze_copy=copy.deepcopy(maze)
+    tracemalloc.start()
+    _, _ = search_algorithm(maze_copy,config.start_pos, config.exit_pos, config.direction)
     current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     gc.enable()
@@ -47,15 +48,20 @@ def collect_data(maze_id, search):
             case _:
                 raise Exception("search_algorithm not found")
 
-    is_solved="1" if path!=[] else "0"
-    movement_steps = "---" if path==[] else len(path)-1
-    is_optimal = "1" if optimal_path_lenght == len(path)-1 else "0"
+    is_solved=1 if path!=[] else 0
+    movement_steps = -1 if path==[] else len(path)-1
+    is_optimal = 1 if optimal_path_lenght == len(path)-1 else 0
     memory_peak = peak / (1024 * 1024)  #in MiB
     save_run_info(config.exprtiment_id, maze_id, search, is_solved, execution_time, len_explored_node,
                   movement_steps, is_optimal, memory_peak)
     
 
 def repeat_collection(id_list, search, times=1):  #els id tenen que ser del mateix category i size (encluint stard and end id)
+    for _ in range(10):
+        maze, optimal_path_lenght= load_maze("M1300001")
+        path, list_explored_node = algorithm_DFS(copy.deepcopy(maze),config.start_pos, config.exit_pos, config.direction)
+        path, list_explored_node = algorithm_BFS(copy.deepcopy(maze),config.start_pos, config.exit_pos, config.direction)
+        path, list_explored_node = algorithm_A_star(copy.deepcopy(maze),config.start_pos, config.exit_pos, config.direction)
     for _ in range(times):
         for maze_id in id_list:
             if search=="all":
@@ -64,3 +70,4 @@ def repeat_collection(id_list, search, times=1):  #els id tenen que ser del mate
                 collect_data(maze_id,"A_star")
             else:
                 collect_data(maze_id,search)
+            print(f"maze: {maze_id} done")

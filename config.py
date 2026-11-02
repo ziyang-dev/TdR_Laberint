@@ -62,7 +62,7 @@ runs_label={
     "movement_steps": "Nombre de moviments",
     "is_optimal": "És òptim?",
     "memory_peak": "Pic de memòria",
-    "maze_size": "ERROR"
+    "maze_size": "Mida d'un costat del laberint"
 }
 
 runs_unit_label={
@@ -91,9 +91,9 @@ generator_algorithm_label={
     "unsolvable": "Usolvable maze"
 }
 
-exprtiment_id="E000"
+exprtiment_id="E0010000"
 
-    #path
+#path
 
 DATA_DIR = Path("data_store")
 
@@ -102,13 +102,20 @@ RUN_DIR = Path("run")
 
 runs_path="data_store/run/runs.csv"
 error_info_runs_path="data_store/run/error_info_runs_path.txt"
+runsSQL_path="data_store/run/runs.db"
 
 #main
 windowsCaptionText="Debug"  #Nom de finestres
-windows_size=600 # tamany de la pantalla, quadrat
+windows_size=1080 # tamany de la pantalla, quadrat
 
-with_auxiliary_line=True
+with_auxiliary_line=False
 
 animation_type="click"  #["off","click","auto"]
 
 ticks=30
+
+
+import sqlite3
+
+connection=sqlite3.connect(runsSQL_path)
+connection.row_factory = sqlite3.Row

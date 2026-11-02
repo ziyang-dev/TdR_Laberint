@@ -3,28 +3,12 @@ import matplotlib.colors as mcolors
 import numpy as np
 import config
 from statsmodels.nonparametric.smoothers_lowess import lowess
-from data_manager import load_determined_run_info, load_maze
+from data_manager import load_determined_run_info, load_maze, divide_by_category
 
 def int_or_float(valor):
     num = float(valor)
     return int(num) if num.is_integer() else num
 
-def divide_by_category(run_id_list,category,*info_types):
-    maze_dict={}
-    for run_id in run_id_list:
-        category_info, *info=load_determined_run_info(run_id,category,*info_types)
-        if len(info)==1:
-            info=info[0]
-        if isinstance(info,list):
-            result=[int_or_float(n) for n in info]
-        else:
-            result=int_or_float(info)
-        if category=="maze_category":
-            category_info=config.maze_category[category_info][1]
-        elif category=="maze_size":
-            category_info=config.maze_size[category_info]
-        maze_dict.setdefault(category_info, []).append(result)
-    return maze_dict
 
 def mean_dict_inplace(data_dict):  #dict_type={"key":[folat_list]}
     for key,values in data_dict.items():
@@ -98,9 +82,10 @@ def chart_1gen3sol1size1info_maze(runs_id_list, info_type,  *, title="Chart type
         mean_dict_inplace(maze_dict[key])
 
 
-    DFS_info=list(maze_dict["DFS"].values())
-    BFS_info=list(maze_dict["BFS"].values())
-    A_star_info=list(maze_dict["A_star"].values())
+    maze_ids = sorted(maze_dict["DFS"].keys())
+    DFS_info = [maze_dict["DFS"][maze_id] for maze_id in maze_ids]
+    BFS_info = [maze_dict["BFS"][maze_id] for maze_id in maze_ids]
+    A_star_info = [maze_dict["A_star"][maze_id] for maze_id in maze_ids]
 
     x = np.arange(len(DFS_info))
 
@@ -174,15 +159,12 @@ def chart_9gen3sol1size1info_heap(runs_id_list, info_type,  *, title="Chart type
         maze_dict[key]=divide_by_category(valor,"maze_category",info_type)
         mean_dict_inplace(maze_dict[key])
 
-    def order_gen_in_list(dict):
-        result_list=[None for _ in range(len(dict))]
-        for i in range(len(dict)):
-            category=config.maze_category[str(i+1)][1]
-            result_list[i]=dict[category]
-        return result_list
+    categories = [config.maze_category[str(i)][1] for i in range(1, 10)]
 
+    solvers = ["DFS", "BFS", "A_star"]
 
-    info_list=[order_gen_in_list(maze_dict["DFS"]),order_gen_in_list(maze_dict["BFS"]),order_gen_in_list(maze_dict["A_star"])]
+    info_list = [[maze_dict[solver][category] for category in categories] for solver in solvers]
+
     n=len(info_list[0])
     for i in range(1,len(info_list)):
         if n!=len(info_list[i]):
@@ -197,9 +179,7 @@ def chart_9gen3sol1size1info_heap(runs_id_list, info_type,  *, title="Chart type
 
     heatmap = ax.imshow(info_list, cmap="plasma", aspect="auto")
         
-    x_ticks_label=list(maze_dict["DFS"].keys())
-    for i in range(len(x_ticks_label)):
-        x_ticks_label[i]=config.generator_algorithm_label[x_ticks_label[i]]
+    x_ticks_label = [config.generator_algorithm_label[category] for category in categories]
     ax.set_xticks(range(len(info_list[0])))
     ax.set_xticklabels(x_ticks_label,  rotation=45, ha="right")
     ax.set_yticks(range(len(info_list)))
@@ -229,15 +209,9 @@ def chart_9gen1sol1size1info_bar(runs_id_list, info_type, *, title="Chart type: 
     maze_dict=divide_by_category(runs_id_list,"maze_category",info_type)
     mean_dict_inplace(maze_dict)
 
-    def order_gen_in_list(dict):
-        result_list=[None for _ in range(len(dict))]
-        for i in range(len(dict)):
-            category=config.maze_category[str(i+1)][1]
-            result_list[i]=dict[category]
-        return result_list
+    categories = [config.maze_category[str(i)][1] for i in range(1, 10) ]
 
-
-    info_list=order_gen_in_list(maze_dict)
+    info_list = [maze_dict[category] for category in categories]
   
     fig, ax = plt.subplots()
 
@@ -247,13 +221,10 @@ def chart_9gen1sol1size1info_bar(runs_id_list, info_type, *, title="Chart type: 
     ax.set_title(title)
 
     x = np.arange(len(info_list))
-    x_ticks_label=list(maze_dict.keys())
+    x_ticks_label = [config.generator_algorithm_label[category] for category in categories]
 
     ax.bar(x, info_list)
 
-    for i in range(len(x_ticks_label)):
-        x_ticks_label[i]=config.generator_algorithm_label[x_ticks_label[i]]
-    
     ax.set_xticks(x)
     ax.set_xticklabels(x_ticks_label,  rotation=45, ha="right")
 
@@ -426,7 +397,7 @@ def chart_1gen3sol5size1info(runs_id_list, info_type, *, title="Chart type: char
         mean_dict={}
         
         for value in sol_dict.values():
-            m_size=(config.maze_size_int[config.maze_size[str(value[0])]]*2+1)**1
+            m_size=(config.maze_size_int[config.maze_size[str(value[0])]]*2+1)
             maze_size_list.append(m_size)
             info_list.append(value[1])
             mean_dict.setdefault(m_size, []).append(value[1])
@@ -439,10 +410,10 @@ def chart_1gen3sol5size1info(runs_id_list, info_type, *, title="Chart type: char
         x_smooth = []
         y_smooth = []
 
-        for key, value in mean_dict.items():
+        for key in sorted(mean_dict):
             x_smooth.append(key)
-            y_smooth.append(value)
-            
+            y_smooth.append(mean_dict[key])
+                    
         match sol_key:
             case "DFS":
                 color='C0'

@@ -7,7 +7,7 @@ def algorithm_BFS(maze,start_pos, exit_pos, direction):
     exit_pos_x = size + exit_pos[0]
     exit_pos_y = size + exit_pos[1]
     if start_pos==(exit_pos_x,exit_pos_y):
-        return queue
+        return queue, queue
     index = 0
     queue_len=1
     queue_append = queue.append

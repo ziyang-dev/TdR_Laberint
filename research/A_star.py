@@ -6,7 +6,7 @@ def algorithm_A_star(maze,start_pos, exit_pos, direction):
     exit_pos_y = size + exit_pos[1]
     start_pos_x,start_pos_y= start_pos
     if start_pos_x==exit_pos_x and start_pos_y==exit_pos_y:
-        return [start_pos]
+        return [start_pos], []
     open_list=[(abs(exit_pos_x-start_pos_x)+abs(exit_pos_y-start_pos_y), 0, 0, start_pos_x, start_pos_y,-1)]
     closed_list=[]
     parent=[]
@@ -40,5 +40,5 @@ def algorithm_A_star(maze,start_pos, exit_pos, direction):
             if -casella>g or casella==0:
                 row[x]=-g
                 counter+=1
-                heapq_push(open_list,(int(abs(exit_pos_x-x)+abs(exit_pos_y-y)+g),counter,g,x,y,index))
+                heapq_push(open_list,(abs(exit_pos_x-x)+abs(exit_pos_y-y)+g,counter,g,x,y,index))
     return[], closed_list

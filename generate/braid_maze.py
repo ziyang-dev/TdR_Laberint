@@ -80,8 +80,9 @@ def braid_maze_generate_wall_method(size):
             maze[y][x]=1
         else:
             maze[y][x]=0
-    if not algorithm_A_star(copy.deepcopy(maze),config.start_pos,config.exit_pos,config.direction):
-        return braid_maze_generate_wall_method(size//2)
+    path, _ = algorithm_A_star(copy.deepcopy(maze), config.start_pos, config.exit_pos, config.direction)
+    if not path:
+        return braid_maze_generate_wall_method(size // 2)
     return maze
 
 def animation_braid_maze_break_wall_method(size):
