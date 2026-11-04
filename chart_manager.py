@@ -441,3 +441,14 @@ for i in range(1,6):
     ril.extend(load_run_id(is_outlier="S", maze_size=str(i)))
 chart_1gen3sol5size1info(ril,"execution_time")'''
 #run_id,experiment_id,maze_id,solver_algorithm,is_solved,execution_time,vertices_explored,movement_steps,is_optimal,memory_peak,maze_category,maze_size,is_outlier
+
+def save_runs_info_txt(runs_id_list, r_info, info_type, filename="results.txt"):
+    mean_value = np.mean(r_info)
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write(f"Info type: {info_type}\n")
+        file.write(f"Number of runs: {len(r_info)}\n")
+        file.write(f"Unit: {config.runs_unit_label[info_type]}\n\n")
+        file.write("Results:\n")
+        for run_id, value in zip(runs_id_list, r_info):
+            file.write(f"Run {run_id}: {value}\n")
+        file.write(f"\nMean value: {mean_value}\n")
