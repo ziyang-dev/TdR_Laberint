@@ -4,6 +4,7 @@ import numpy as np
 import config
 from statsmodels.nonparametric.smoothers_lowess import lowess
 from data_manager import load_determined_run_info, load_maze, divide_by_category
+import csv
 
 def int_or_float(valor):
     num = float(valor)
@@ -21,8 +22,9 @@ def draw_grid(ax):
     ax.grid(axis='both', linestyle='-.', alpha=0.3)
 
 
-def chart_1gen1sol1size1info_runs(runs_id_list, info_type,  *, title="Chart type: 1gen1sol1size1info_runs"):
+def chart_1gen1sol1size1info_runs(runs_id_list, info_type,  *, title):
     r_info=[]
+    runs_id_list.sort()
     for run_id in runs_id_list:
         r_info.append(float(load_determined_run_info(run_id,info_type)))
 
@@ -45,9 +47,10 @@ def chart_1gen1sol1size1info_runs(runs_id_list, info_type,  *, title="Chart type
     draw_grid(ax)
     ax.legend()
     plt.tight_layout()
+    save_dict_to_csv(["Run_ID", info_type], dict(zip(runs_id_list, r_info)), title)
     plt.show()
 
-def chart_1gen1sol1size1info_maze(runs_id_list, info_type,  *, title="Chart type: 1gen1sol1size1info_maze"):
+def chart_1gen1sol1size1info_maze(runs_id_list, info_type,  *, title):
     maze_dict=divide_by_category(runs_id_list,"maze_id",info_type)
     mean_dict_inplace(maze_dict)
 
@@ -73,9 +76,10 @@ def chart_1gen1sol1size1info_maze(runs_id_list, info_type,  *, title="Chart type
     draw_grid(ax)
     ax.legend()
     plt.tight_layout()
+    save_dict_to_csv(["Maze_id", "Value"], maze_dict,title)
     plt.show()
 
-def chart_1gen3sol1size1info_maze(runs_id_list, info_type,  *, title="Chart type: 1gen3sol1size1info_maze"):
+def chart_1gen3sol1size1info_maze(runs_id_list, info_type,  *, title):
     maze_dict=divide_by_category(runs_id_list,"solver_algorithm","run_id")
     for key,valor in maze_dict.items():
         maze_dict[key]=divide_by_category(valor,"maze_id",info_type)
@@ -112,6 +116,8 @@ def chart_1gen3sol1size1info_maze(runs_id_list, info_type,  *, title="Chart type
     draw_grid(ax)
     ax.legend()
     plt.tight_layout()
+    result_dict=merge_dict(maze_dict["DFS"], maze_dict["BFS"], maze_dict["A_star"])
+    save_dict_to_csv(["Maze_ID", f"DFS-{info_type}", f"BFSs-{info_type}", f"A_star{info_type}"], result_dict, title)
     plt.show()
 
 def chart_1gen3sol1size1info_box(runs_id_list, info_type,  *, title="Chart type: 1gen3sol1size1info_box"):
@@ -233,7 +239,7 @@ def chart_9gen1sol1size1info_bar(runs_id_list, info_type, *, title="Chart type: 
     plt.tight_layout()
     plt.show()
 
-def chart_1gen1sol1size1info_optim_pie(runs_id_list,  *, title="Chart type: chart_1gen1sol1size1info_optim_pie"):
+def chart_1gen1sol1size1info_optim_pie(runs_id_list,  *, title):
     maze_dict={}
 
     mean_list=[0,0]
@@ -298,6 +304,8 @@ def chart_1gen1sol1size1info_optim_pie(runs_id_list,  *, title="Chart type: char
     )
 
     plt.tight_layout() 
+    result_dict={}
+    save_dict_to_csv(["n%-n+10%", "numbers"],maze_dict,title, extra=info_text)
     plt.show()
 
 def chart_1gen1sol1size2info_ver_time(runs_id_list,  *, title="Chart type: chart_1gen1sol1size2info_ver_time"):
@@ -330,7 +338,8 @@ def chart_1gen1sol1size2info_ver_time(runs_id_list,  *, title="Chart type: chart
     plt.tight_layout()
     plt.show()
 
-def chart_1gen3sol5size1info_oldV(runs_id_list, info_type, *, title="Chart type: chart_1gen3sol5size1info"):
+def chart_1gen3sol5size1info_oldV(runs_id_list, info_type, *, title):
+    raise Exception ("This is just a old version, you shouldn't use it :)")
     maze_dict=divide_by_category(runs_id_list,"solver_algorithm","run_id")
     for key,valor in maze_dict.items():
         maze_dict[key]=divide_by_category(valor,"maze_id","maze_size",info_type)
@@ -452,3 +461,19 @@ def save_runs_info_txt(runs_id_list, r_info, info_type, filename="results.txt"):
         for run_id, value in zip(runs_id_list, r_info):
             file.write(f"Run {run_id}: {value}\n")
         file.write(f"\nMean value: {mean_value}\n")
+
+
+def merge_dict(*dicts):
+    result= {}
+    for d in dicts:
+        for k, v in d.items():
+            result.setdefault(k,[]).append(v)
+    return result
+
+def save_dict_to_csv(row, data, filename, *, extra):
+    with open(f"{config.chart_image_info_path}/{filename}.csv", "w", newline="", encoding="utf-8-sig") as file:
+        writer = csv.writer(file)
+        writer.writerow(row)
+        for key, value in data.items():
+            writer.writerow([key] + (value if isinstance(value, list) else [value]))
+        writer.writerow([extra])

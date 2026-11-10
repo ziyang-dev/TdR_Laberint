@@ -103,6 +103,7 @@ RUN_DIR = Path("run")
 runs_path="data_store/run/runs.csv"
 error_info_runs_path="data_store/run/error_info_runs_path.txt"
 runsSQL_path="data_store/run/runs.db"
+chart_image_info_path=f"data_store/chart/info"
 
 #main
 windowsCaptionText="Debug"  #Nom de finestres
