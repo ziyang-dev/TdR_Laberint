@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from matplotlib.cbook import boxplot_stats
+from pathlib import Path
 import numpy as np
 import config
 from statsmodels.nonparametric.smoothers_lowess import lowess
@@ -22,9 +24,10 @@ def draw_grid(ax):
     ax.grid(axis='both', linestyle='-.', alpha=0.3)
 
 
-def chart_1gen1sol1size1info_runs(runs_id_list, info_type,  *, title):
+def chart_1gen1sol1size1info_runs(runs_id_list, info_type,  *, lst):
+    filename, title=lst
     r_info=[]
-    runs_id_list.sort()
+    runs_id_list = sorted(runs_id_list)
     for run_id in runs_id_list:
         r_info.append(float(load_determined_run_info(run_id,info_type)))
 
@@ -47,10 +50,12 @@ def chart_1gen1sol1size1info_runs(runs_id_list, info_type,  *, title):
     draw_grid(ax)
     ax.legend()
     plt.tight_layout()
-    save_dict_to_csv(["Run_ID", info_type], dict(zip(runs_id_list, r_info)), title)
+    save_dict_to_csv(["Run_ID", info_type], dict(zip(runs_id_list, r_info)), "run_id", filename, extra=f"Mean_value: {mean_value}, Collection time: {len(runs_id_list)} runs.")
+    save_fig_and_close(fig, "run_id", filename)
     plt.show()
 
-def chart_1gen1sol1size1info_maze(runs_id_list, info_type,  *, title):
+def chart_1gen1sol1size1info_maze(runs_id_list, info_type,  *, lst):
+    filename, title=lst
     maze_dict=divide_by_category(runs_id_list,"maze_id",info_type)
     mean_dict_inplace(maze_dict)
 
@@ -76,10 +81,12 @@ def chart_1gen1sol1size1info_maze(runs_id_list, info_type,  *, title):
     draw_grid(ax)
     ax.legend()
     plt.tight_layout()
-    save_dict_to_csv(["Maze_id", "Value"], maze_dict,title)
+    save_dict_to_csv(["Maze_id", "Value"], maze_dict, "maze_id", filename, extra=f"Mean_value: {mean_value}, Collection time: {len(runs_id_list)} runs.")
+    save_fig_and_close(fig, "maze_id", filename)
     plt.show()
 
-def chart_1gen3sol1size1info_maze(runs_id_list, info_type,  *, title):
+def chart_1gen3sol1size1info_maze(runs_id_list, info_type,  *, lst):
+    filename, title=lst
     maze_dict=divide_by_category(runs_id_list,"solver_algorithm","run_id")
     for key,valor in maze_dict.items():
         maze_dict[key]=divide_by_category(valor,"maze_id",info_type)
@@ -117,10 +124,13 @@ def chart_1gen3sol1size1info_maze(runs_id_list, info_type,  *, title):
     ax.legend()
     plt.tight_layout()
     result_dict=merge_dict(maze_dict["DFS"], maze_dict["BFS"], maze_dict["A_star"])
-    save_dict_to_csv(["Maze_ID", f"DFS-{info_type}", f"BFSs-{info_type}", f"A_star{info_type}"], result_dict, title)
+    save_dict_to_csv(["Maze_ID", f"DFS-{info_type}", f"BFSs-{info_type}", f"A_star-{info_type}"], result_dict, "3_sol", filename,
+                      extra=f"DFS-mean_value: {mean_DFS}, BFS-mean_value: {mean_BFS}, A_star-mean_value: {mean_A_star}, Collection time: {len(runs_id_list)} runs.")
+    save_fig_and_close(fig, "3_sol", filename)
     plt.show()
 
-def chart_1gen3sol1size1info_box(runs_id_list, info_type,  *, title="Chart type: 1gen3sol1size1info_box"):
+def chart_1gen3sol1size1info_box(runs_id_list, info_type,  *, lst):
+    filename, title=lst
     maze_dict=divide_by_category(runs_id_list,"solver_algorithm","run_id")
     for key,valor in maze_dict.items():
         maze_dict[key]=divide_by_category(valor,"maze_id",info_type)
@@ -155,11 +165,14 @@ def chart_1gen3sol1size1info_box(runs_id_list, info_type,  *, title="Chart type:
     ax.set_xticklabels(["DFS","BFS","A_star"], rotation=45, ha="right")
 
     draw_grid(ax)
-    ax.legend()
     plt.tight_layout()
+    result_dict=merge_dict(boxplot_stats(DFS_info)[0], boxplot_stats(BFS_info)[0], boxplot_stats(A_star_info)[0])
+    save_dict_to_csv(["Info_type", f"DFS-{info_type}", f"BFSs-{info_type}", f"A_star-{info_type}"], result_dict, "box", filename,  extra=f"Collection time: {len(runs_id_list)} runs.")
+    save_fig_and_close(fig, "box", filename)
     plt.show()
 
-def chart_9gen3sol1size1info_heap(runs_id_list, info_type,  *, title="Chart type: chart_9gen3sol1size1info_heap"):
+def chart_9gen3sol1size1info_heap(runs_id_list, info_type,  *, lst):
+    filename, title=lst
     maze_dict=divide_by_category(runs_id_list,"solver_algorithm","run_id")
     for key,valor in maze_dict.items():
         maze_dict[key]=divide_by_category(valor,"maze_category",info_type)
@@ -208,10 +221,13 @@ def chart_9gen3sol1size1info_heap(runs_id_list, info_type,  *, title="Chart type
 
     fig.colorbar(heatmap, ax=ax).set_label(f"{config.runs_label[info_type]} ({config.runs_unit_label[info_type]})")
     plt.tight_layout()
+    result_dict=merge_dict(maze_dict["DFS"], maze_dict["BFS"], maze_dict["A_star"])
+    save_dict_to_csv(["Maze_ID", f"DFS-{info_type}", f"BFSs-{info_type}", f"A_star-{info_type}"], result_dict, "heap", filename,  extra=f"Collection time: {len(runs_id_list)} runs.")
+    save_fig_and_close(fig, "heap", filename)
     plt.show()
 
-def chart_9gen1sol1size1info_bar(runs_id_list, info_type, *, title="Chart type: chart_9gen1sol1size1info_bar"):
-
+def chart_9gen1sol1size1info_bar(runs_id_list, info_type, *, lst):
+    filename, title=lst
     maze_dict=divide_by_category(runs_id_list,"maze_category",info_type)
     mean_dict_inplace(maze_dict)
 
@@ -235,11 +251,13 @@ def chart_9gen1sol1size1info_bar(runs_id_list, info_type, *, title="Chart type: 
     ax.set_xticklabels(x_ticks_label,  rotation=45, ha="right")
 
     draw_grid(ax)
-    ax.legend()
     plt.tight_layout()
+    save_dict_to_csv(["Maze_category", str(info_type)], maze_dict, "bar", filename,  extra=f"Collection time: {len(runs_id_list)} runs.")
+    save_fig_and_close(fig, "bar", filename)
     plt.show()
 
-def chart_1gen1sol1size1info_optim_pie(runs_id_list,  *, title):
+def chart_1gen1sol1size1info_optim_pie(runs_id_list,  *, lst):
+    filename, title=lst
     maze_dict={}
 
     mean_list=[0,0]
@@ -305,10 +323,12 @@ def chart_1gen1sol1size1info_optim_pie(runs_id_list,  *, title):
 
     plt.tight_layout() 
     result_dict={}
-    save_dict_to_csv(["n%-n+10%", "numbers"],maze_dict,title, extra=info_text)
+    save_dict_to_csv(["n%-n+10%", "numbers"],maze_dict, "pie", filename, extra=info_text)
+    save_fig_and_close(fig, "pie", filename)
     plt.show()
 
-def chart_1gen1sol1size2info_ver_time(runs_id_list,  *, title="Chart type: chart_1gen1sol1size2info_ver_time"):
+def chart_1gen1sol1size2info_ver_time(runs_id_list,  *, lst):
+    filename, title=lst
     maze_dict=divide_by_category(runs_id_list,"maze_id","vertices_explored","execution_time")
     mean_dict_inplace(maze_dict)
 
@@ -336,6 +356,8 @@ def chart_1gen1sol1size2info_ver_time(runs_id_list,  *, title="Chart type: chart
 
     draw_grid(ax)
     plt.tight_layout()
+    save_dict_to_csv(["Maze_ID", "vertices_explored", "execution_time"], maze_dict, "ver_time", filename,  extra=f"Collection time: {len(runs_id_list)} runs.")
+    save_fig_and_close(fig, "ver_time", filename)
     plt.show()
 
 def chart_1gen3sol5size1info_oldV(runs_id_list, info_type, *, title):
@@ -386,7 +408,8 @@ def chart_1gen3sol5size1info_oldV(runs_id_list, info_type, *, title):
     plt.tight_layout()
     plt.show()
 
-def chart_1gen3sol5size1info(runs_id_list, info_type, *, title="Chart type: chart_1gen3sol5size1info"):
+def chart_1gen3sol5size1info(runs_id_list, info_type, *, lst):
+    filename, title=lst
     maze_dict=divide_by_category(runs_id_list,"solver_algorithm","run_id")
     for key,valor in maze_dict.items():
         maze_dict[key]=divide_by_category(valor,"maze_id","maze_size",info_type)
@@ -441,6 +464,9 @@ def chart_1gen3sol5size1info(runs_id_list, info_type, *, title="Chart type: char
     draw_grid(ax)
     ax.legend()
     plt.tight_layout()
+    result_dict=merge_dict(maze_dict["DFS"], maze_dict["BFS"], maze_dict["A_star"])
+    save_dict_to_csv(["Maze_ID", f"DFS-[size, {info_type}]", f"BFSs-[size, {info_type}]", f"A_star-[size, {info_type}]"], result_dict, "5_size", filename,  extra=f"Collection time: {len(runs_id_list)} runs.")
+    save_fig_and_close(fig, "5_size", filename)
     plt.show()
 
 
@@ -451,29 +477,60 @@ for i in range(1,6):
 chart_1gen3sol5size1info(ril,"execution_time")'''
 #run_id,experiment_id,maze_id,solver_algorithm,is_solved,execution_time,vertices_explored,movement_steps,is_optimal,memory_peak,maze_category,maze_size,is_outlier
 
-def save_runs_info_txt(runs_id_list, r_info, info_type, filename="results.txt"):
-    mean_value = np.mean(r_info)
-    with open(filename, "w", encoding="utf-8") as file:
-        file.write(f"Info type: {info_type}\n")
-        file.write(f"Number of runs: {len(r_info)}\n")
-        file.write(f"Unit: {config.runs_unit_label[info_type]}\n\n")
-        file.write("Results:\n")
-        for run_id, value in zip(runs_id_list, r_info):
-            file.write(f"Run {run_id}: {value}\n")
-        file.write(f"\nMean value: {mean_value}\n")
 
-
-def merge_dict(*dicts):
+def merge_dict(*dicts): #combinate and check 2 dict to 1
+    keys = dicts[0].keys()
+    if any(d.keys() != keys for d in dicts[1:]):
+        raise ValueError("Different keys between dictionaries")
+    
     result= {}
     for d in dicts:
         for k, v in d.items():
             result.setdefault(k,[]).append(v)
     return result
 
-def save_dict_to_csv(row, data, filename, *, extra):
-    with open(f"{config.chart_image_info_path}/{filename}.csv", "w", newline="", encoding="utf-8-sig") as file:
+def save_dict_to_csv(row, data, chart_type, filename, *, extra=None): #save give dict info to csv
+    if config.save_chart_info_and_image==False: return
+    with open(f"{chart_info_to_folder(chart_type, "info")}/{filename}.csv", "w", newline="", encoding="utf-8-sig") as file:
         writer = csv.writer(file)
         writer.writerow(row)
         for key, value in data.items():
             writer.writerow([key] + (value if isinstance(value, list) else [value]))
-        writer.writerow([extra])
+        if extra != None: writer.writerow([extra])
+
+def save_fig_and_close(fig, chart_type, filename):  #save a chart as png and close the figure
+    if config.save_chart_info_and_image==False: return
+    fig.savefig(f"{chart_info_to_folder(chart_type, "image")}/{filename}.png", dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+def chart_info_to_folder(chart_type, info_type):  #create and return folder
+    if chart_type not in config.dict_chart_type.keys() or info_type not in ["image", "info"]:
+        raise Exception("Unkow index")
+    folder=Path(f"{config.chart_info_path}/{chart_type}/{info_type}")
+    folder.mkdir(parents=True, exist_ok=True)
+    return folder
+
+def translate_title(chart_type, *, info=None, gen=None, sol=None, size=None, extra=None):
+    r_gen= "" if gen ==None else config.dict_chart_gen[gen]
+    r_sol= "" if sol ==None else config.dict_chart_sol[sol]
+    r_size= "" if size ==None else config.dict_chart_size[size]
+    r_extra= "" if extra ==None else f" ({extra})"
+    if config.dict_chart_type_types[chart_type]=="info":
+        if info ==None:
+            raise TypeError("translate_title() missing 1 required positional argument: 'info'")
+        r_info= config.dict_chart_info_de[info]
+        title=f"{config.dict_chart_type[chart_type]}{r_info}{r_gen}{r_sol}{r_size}{r_extra}."
+    elif config.dict_chart_type_types[chart_type]=="no info":
+        title=f"{config.dict_chart_type[chart_type]}{r_gen}{r_sol}{r_size}{r_extra}."
+    elif config.dict_chart_type_types[chart_type]=="en":
+        if info ==None:
+            raise TypeError("translate_title() missing 1 required positional argument: 'info'")
+        r_info= config.dict_chart_info_en[info]
+        title=f"{config.dict_chart_type[chart_type]}{r_gen}{r_sol}{r_size}{r_extra}."
+    f_info= "" if info ==None else f"-{info}"
+    f_gen= "" if gen ==None else f"-{gen}"
+    f_sol= "" if sol ==None else f"-{sol}"
+    f_size= "" if size ==None else f"-{size}"
+    f_extra= "" if extra ==None else f"--{extra}"
+    filename=f"{chart_type}{f_info}{f_gen}{f_sol}{f_size}{f_extra}"
+    return[filename, title]
