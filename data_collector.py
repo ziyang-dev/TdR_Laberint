@@ -52,7 +52,7 @@ def collect_data(maze_id, search):
     movement_steps = -1 if path==[] else len(path)-1
     is_optimal = 1 if optimal_path_lenght == len(path)-1 else 0
     memory_peak = peak / (1024 * 1024)  #in MiB
-    save_run_info(config.exprtiment_id, maze_id, search, is_solved, execution_time, len_explored_node,
+    save_run_info(config.experiment_id, maze_id, search, is_solved, execution_time, len_explored_node,
                   movement_steps, is_optimal, memory_peak)
     
 

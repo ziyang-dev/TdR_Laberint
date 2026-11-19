@@ -91,7 +91,7 @@ generator_algorithm_label={
     "unsolvable": "Usolvable maze"
 }
 
-exprtiment_id="E0010000"
+experiment_id="E0050000"
 
 #path
 
@@ -103,7 +103,7 @@ RUN_DIR = Path("run")
 runs_path="data_store/run/runs.csv"
 error_info_runs_path="data_store/run/error_info_runs_path.txt"
 runsSQL_path="data_store/run/runs.db"
-chart_image_info_path=f"data_store/chart/info"
+chart_info_path="data_store/chart"
 
 #main
 windowsCaptionText="Debug"  #Nom de finestres
@@ -120,3 +120,77 @@ import sqlite3
 
 connection=sqlite3.connect(runsSQL_path)
 connection.row_factory = sqlite3.Row
+
+save_chart_info_and_image=True
+
+
+#region         char dict
+
+dict_chart_type = {
+    "run_id": "Resultats",
+    "maze_id": "Resultats",
+    "3_sol": "Comparació",
+    "box": "Distribució", 
+    "heap": "Mapa de calor",
+    "bar": "Anàlisi",
+    "pie": "Distribució percentual del nombre de moviments de les solucions trobades",
+    "ver_time": "Relació entre el nombre de les caselles explorades",
+    "5_size": "Influència de la mida del laberint en"
+}
+
+dict_chart_type_types={
+    "run_id": "info",
+    "maze_id": "info",
+    "3_sol": "info",
+    "box": "info", 
+    "heap": "info",
+    "bar": "info",
+    "pie": "no info",
+    "ver_time": "no info",
+    "5_size": "en"
+}
+
+
+dict_chart_info_de={
+    "execution_time": " del temps d'execució",
+    "vertices_explored": " de les caselles explorades",
+    "movement_steps": " del nombre de moviments",
+    "memory_peak": " del pic de memòria",
+}
+
+dict_chart_info_en={
+    "execution_time": " en el temps d'execució",
+    "vertices_explored": " en les caselles explorades",
+    "movement_steps": " en el nombre de moviments",
+    "memory_peak": " en el pic de memòria",
+}
+
+dict_chart_gen={
+    1: " generat mitjançant Recursive Backtracker",
+    2: " generat mitjançant l'algorisme de Prim",
+    3: " generat mitjançant Binary Tree",
+    4: " generat mitjançant Sidewinder",
+    5: " generat mitjançant Recursive Division",
+    6: " generat mitjançant l'algorisme de Wilson" ,
+    7: " sobre braid maze generat mitjançant el metode per destrucció de paret",
+    8: " sobre braid maze generat mitjançant el metode per generació de paret",
+    9: " generat mitjançant usolvable maze"
+}
+
+dict_chart_sol={
+    "DFS": " resol amb DFS",
+    "BFS": " resol amb BFS",
+    "A_star": " resol amb A*"
+}
+
+dict_chart_size={
+    1: f" de mida {maze_size_int["extra_small"]*2+1} * {maze_size_int["extra_small"]*2+1}",
+    2: f" de mida {maze_size_int["small"]*2+1} * {maze_size_int["small"]*2+1}",
+    3: f" de mida {maze_size_int["medium"]*2+1} * {maze_size_int["medium"]*2+1}",
+    4: f" de mida {maze_size_int["large"]*2+1} * {maze_size_int["large"]*2+1}",
+    5: f" de mida {maze_size_int["extra_large"]*2+1} * {maze_size_int["extra_large"]*2+1}",
+    6: f" de mida {maze_size_int["especial_large"]*2+1} * {maze_size_int["especial_large"]*2+1}"
+}
+
+#endregion
+
