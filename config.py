@@ -107,7 +107,7 @@ chart_image_info_path=f"data_store/chart/info"
 
 #main
 windowsCaptionText="Debug"  #Nom de finestres
-windows_size=1080 # tamany de la pantalla, quadrat
+windows_size=600 # tamany de la pantalla, quadrat
 
 with_auxiliary_line=False
 

@@ -1,7 +1,7 @@
 import pygame
 import config
 
-from representation.maze_representation import drawGrid, drawAuxiliaryLines, add_list_to_maze
+from representation.maze_representation import drawGrid, drawAuxiliaryLines, add_list_to_maze, draw_exit
 from data_manager import load_maze
 
 def animate_maze_generation(gen):
@@ -45,6 +45,7 @@ def animate_maze_generation(gen):
         screen.fill(config.Color.background) #posar color de fons
 
         drawGrid(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
+        draw_exit(screen, gridSize, gridNumber)
 
         if config.with_auxiliary_line:
             drawAuxiliaryLines(screen,gridSize,gridNumber,config.windows_size) #dibuixar graella de auxiliar
@@ -84,6 +85,7 @@ def maze_representation(maze_id):
         screen.fill(config.Color.background) #posar color de fons
 
         drawGrid(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
+        draw_exit(screen, gridSize, gridNumber)
 
         if config.with_auxiliary_line:
             drawAuxiliaryLines(screen,gridSize,gridNumber,config.windows_size) #dibuixar graella de auxiliar

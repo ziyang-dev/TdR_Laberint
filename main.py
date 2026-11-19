@@ -1,4 +1,4 @@
-import numpy as np
+"""import numpy as np
 import config
 
 from data_collector import collect_data, repeat_collection
@@ -60,3 +60,57 @@ print(delete_Uinfo())
 #chart_1gen1sol1size1info_optim_pie(load_run_id(is_outlier="S", maze_category=5, solver_algorithm="DFS"))
 #run_id,experiment_id,maze_id,solver_algorithm,is_solved,execution_time,vertices_explored,movement_steps,is_optimal,memory_peak,maze_category,maze_size,is_outlier
 config.connection.close()
+"""
+
+from representation.maze_representation import drawGrid, drawAuxiliaryLines, drawGraph
+from data_manager import load_maze
+import pygame
+import config
+
+maze=[
+    [1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,1,1,1]
+    ]
+
+gridNumber=len(maze)
+gridSize=config.windows_size//gridNumber #tamany de cada casella a un tamany enter
+config.windows_size=gridSize*gridNumber #ajusta el tamany quitant les vores
+
+
+
+pygame.init()
+screen = pygame.display.set_mode((config.windows_size,config.windows_size))
+pygame.display.set_caption(config.windowsCaptionText)
+running = True
+clock = pygame.time.Clock()
+
+while running:
+    #Teclats per sortir
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running=False
+
+    
+    screen.fill(config.Color.background) #posar color de fons
+
+    drawGraph(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
+    #pygame.image.save(screen, "nombre_archivo.png")
+
+    if True:
+        drawAuxiliaryLines(screen,gridSize,gridNumber,config.windows_size) #dibuixar graella de auxiliar
+
+    pygame.display.update() #actualitzar per cada frame
+    clock.tick(1) #ajustar a 30 FPS
+pygame.quit()
