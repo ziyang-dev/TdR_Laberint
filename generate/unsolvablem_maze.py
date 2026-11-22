@@ -1,6 +1,8 @@
 import copy
 import random
 import config
+if config.random_seed is not None:
+    random.seed(config.random_seed)
 from generate.wilson_algorithm import algorithm_wilson
 from research.A_star import algorithm_A_star
 

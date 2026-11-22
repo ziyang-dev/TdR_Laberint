@@ -1,4 +1,7 @@
 import random
+from config import random_seed
+if random_seed is not None:
+    random.seed(random_seed)
 from generate.maze_generate import *
 
 dirList=[(1,0),(-1,0),(0,1),(0,-1)]  #crear una lista amb 4 direcció

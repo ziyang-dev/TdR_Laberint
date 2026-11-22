@@ -1,8 +1,10 @@
 from data_manager import load_run_id, divide_by_category, load_determined_run_info
 from chart_manager import int_or_float
-from config import runs_path, error_info_runs_path, connection
+from config import runs_path, error_info_runs_path, connection, random_seed
 from data_collector import collect_data
 import random
+if random_seed is not None:
+    random.seed(random_seed)
 
 #Critical Values for Dixon's Q-Test alpha=0.05:
 critical_values={3:0.970,4:0.829,5:0.710}

@@ -15,13 +15,14 @@ def drawGraph(surface,maze,gridSize,gridNumber):
             n=maze[y][x]
             if n==0:
                 color=numberToColor(2)
-                pygame.draw.circle(
-                    surface, 
-                    color, 
-                    (x*gridSize+gridSize//2,y*gridSize+gridSize//2), 
-                    gridSize//4, 
-                    #width=1 if gridSize//40<1 else gridSize//20
-                )
+                if y%2*x%2!=0:
+                    pygame.draw.circle(
+                        surface, 
+                        color, 
+                        (x*gridSize+gridSize//2,y*gridSize+gridSize//2), 
+                        gridSize//4, 
+                        #width=1 if gridSize//40<1 else gridSize//20
+                    )
                 line_size=1 if gridSize//40<1 else gridSize//10
                 if y!=gridNumber-1:
                     if maze[y+1][x]==0:
@@ -30,13 +31,27 @@ def drawGraph(surface,maze,gridSize,gridNumber):
                     if maze[y][x+1]==0:
                         pygame.draw.rect(surface,color,(x*gridSize+gridSize//2,y*gridSize+gridSize/2-line_size/2,gridSize, line_size))
                                 
-def draw_exit(surface, gridSize, gridNumber):
+def draw_exit(surface, gridSize, gridNumber, *, type="grid"):
     #sobremarcar les sortides
-    if gridSize>=4:
-        pygame.draw.rect(surface,config.Color.background,(1*gridSize,0*gridSize,gridSize,gridSize*0.75))
-        pygame.draw.rect(surface,config.Color.background,((gridNumber-2)*gridSize,(gridNumber-0.7)*gridSize,gridSize,gridSize*0.75))
-    pygame.draw.rect(surface,config.Color.star,(1*gridSize,1*gridSize,gridSize,gridSize))
-    pygame.draw.rect(surface,config.Color.exit,((gridNumber-2)*gridSize,(gridNumber-2)*gridSize,gridSize,gridSize))
+    if type=="grid":
+        if gridSize>=4:
+            pygame.draw.rect(surface,config.Color.background,(1*gridSize,0*gridSize,gridSize,gridSize*0.75))
+            pygame.draw.rect(surface,config.Color.background,((gridNumber-2)*gridSize,(gridNumber-0.7)*gridSize,gridSize,gridSize*0.75))
+        pygame.draw.rect(surface,config.Color.star,(1*gridSize,1*gridSize,gridSize,gridSize))
+        pygame.draw.rect(surface,config.Color.exit,((gridNumber-2)*gridSize,(gridNumber-2)*gridSize,gridSize,gridSize))
+    elif type=="graph":
+        pygame.draw.circle(
+            surface, 
+            config.Color.star, 
+            (gridSize+gridSize//2,gridSize+gridSize//2), 
+            gridSize//4, 
+        )
+        pygame.draw.circle(
+            surface, 
+            config.Color.exit, 
+            ((gridNumber-2)*gridSize+gridSize//2,(gridNumber-2)*gridSize+gridSize//2), 
+            gridSize//4, 
+        )
 
 def drawAuxiliaryLines(surface,gridSize,gridNumber,windows_size):
     for i in range(1,gridNumber): #dibuixar graella de auxiliar

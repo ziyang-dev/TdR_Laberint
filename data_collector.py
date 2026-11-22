@@ -43,7 +43,9 @@ def collect_data(maze_id, search):
                         if tile==-1: counter+=1
                 len_explored_node=counter
                 del counter
-            case "BFS" | "A_star":
+            case "BFS":
+                len_explored_node=list_explored_node
+            case "A_star":
                 len_explored_node=len(list_explored_node)
             case _:
                 raise Exception("search_algorithm not found")

@@ -344,7 +344,7 @@ def maze_to_tree_graph3(maze):
     nx.draw(
         G,
         pos,
-        with_labels=True,
+        with_labels=False,
         node_size=500,
         node_color="lightblue",
         edgecolors="black",

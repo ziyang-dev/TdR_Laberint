@@ -1,18 +1,52 @@
-from pathlib import Path
-class Color:  #color of maze
+
+#region COLOR
+class Color:  
     background=         (245, 247, 250)     #black
     wall=               (24, 28, 36)        #white
     line=               (50, 220, 120)      #fluorescent green
     error=              (255, 0, 0)         #fluorescent red
     exit=               (255, 160, 170)     #light red
     star=               (140, 210, 255)     #light gleu
+    gray=               (200, 200, 200)     #line gray
 
 
     gren=               (180, 245, 205)     #light green
     yellow=             (255, 230, 150)     #light yellow
     blue=               (40, 60, 95)        #deep blue
     purple=             (185, 130, 255)     #purple
+#endregion
 
+#region CONSTANTS
+
+random_seed=None
+experiment_id="E0050000"
+
+
+
+    #representation
+windowsCaptionText="Debug"  #Nom de finestres
+
+windows_size=600 # tamany de la pantalla, quadrat
+debug_label_panel_width = 700
+
+with_auxiliary_line=False
+with_debug_panel=False
+
+animation_type="auto"  #["off","click","auto"]
+
+ticks=60
+
+debug_stack_max_value=29
+
+
+
+    # save image?
+save_chart_info_and_image=True
+save_maze_image=True
+
+#endregion
+
+#region MAZE SIZE
 
 maze_size_int={
     "extra_small":        5,
@@ -23,12 +57,15 @@ maze_size_int={
     "especial_large":     500
 }
 
-#research
+#endregion
+
+#region SEARCH CONSTANTS
 direction=((1,0), (0,1), (-1,0), (0,-1))
 start_pos=(1,1)
 exit_pos=(-2,-2)
+#endregion
 
-#data_manager
+#region DATA MANAGER
 maze_category={
     "1": ["perfect","recursive_backtracker"],
     "2": ["perfect","prim_algorithm"],
@@ -91,40 +128,31 @@ generator_algorithm_label={
     "unsolvable": "Usolvable maze"
 }
 
-experiment_id="E0050000"
+#endregion
 
-#path
-
+#region PATH
+from pathlib import Path
 DATA_DIR = Path("data_store")
 
 MAZE_DIR = Path("maze")
 RUN_DIR = Path("run")
+
 
 runs_path="data_store/run/runs.csv"
 error_info_runs_path="data_store/run/error_info_runs_path.txt"
 runsSQL_path="data_store/run/runs.db"
 chart_info_path="data_store/chart"
 
-#main
-windowsCaptionText="Debug"  #Nom de finestres
-windows_size=600 # tamany de la pantalla, quadrat
+#endregion
 
-with_auxiliary_line=False
-
-animation_type="click"  #["off","click","auto"]
-
-ticks=30
-
-
+#region SQLite3
 import sqlite3
 
 connection=sqlite3.connect(runsSQL_path)
 connection.row_factory = sqlite3.Row
+#endregion
 
-save_chart_info_and_image=True
-
-
-#region         char dict
+#region CHART DICT
 
 dict_chart_type = {
     "run_id": "Resultats",
@@ -193,4 +221,3 @@ dict_chart_size={
 }
 
 #endregion
-

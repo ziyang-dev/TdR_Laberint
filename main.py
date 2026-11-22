@@ -60,25 +60,15 @@ chart_1gen1sol1size1info_maze(load_run_id(is_outlier="S", maze_category=1, maze_
 config.connection.close()
 """
 
-from representation.maze_representation import drawGrid, drawAuxiliaryLines, drawGraph
+"""from representation.maze_representation import drawGrid, drawAuxiliaryLines, drawGraph, draw_exit
+from representation.graph_representation import *
 from data_manager import load_maze
 import pygame
 import config
 
-maze=[
-    [1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,1,1,1,1,1,1]
-    ]
+maze=load_maze("M1100006")[0]
 
+#print(maze)
 gridNumber=len(maze)
 gridSize=config.windows_size//gridNumber #tamany de cada casella a un tamany enter
 config.windows_size=gridSize*gridNumber #ajusta el tamany quitant les vores
@@ -91,6 +81,23 @@ pygame.display.set_caption(config.windowsCaptionText)
 running = True
 clock = pygame.time.Clock()
 
+
+screen.fill(config.Color.background) #posar color de fons
+if 0:
+    maze_to_tree_graph3(maze)
+elif 1:
+    drawGrid(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
+    #draw_exit(screen,gridSize,gridNumber)
+else:
+    drawGraph(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
+    draw_exit(screen,gridSize,gridNumber, type="graph")
+pygame.image.save(screen, "i05-02-03.png")
+
+if False:
+    drawAuxiliaryLines(screen,gridSize,gridNumber,config.windows_size) #dibuixar graella de auxiliar
+
+pygame.display.update() #actualitzar per cada frame
+
 while running:
     #Teclats per sortir
     for event in pygame.event.get():
@@ -100,15 +107,25 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running=False
 
-    
-    screen.fill(config.Color.background) #posar color de fons
+pygame.quit()"""
 
-    drawGraph(screen,maze,gridSize,gridNumber) #llamar a la funció per pintar el laberint
-    #pygame.image.save(screen, "nombre_archivo.png")
 
-    if True:
-        drawAuxiliaryLines(screen,gridSize,gridNumber,config.windows_size) #dibuixar graella de auxiliar
+'''from generate.recursive_backtracker import animation_recursive_backtracker
+from generate.prim_algorithm import animation_prim
+from generate.binary_tree import animation_binary_tree
+from generate.sidewinder import animation_sidewinder
+from generate.recursive_division import animation_recursive_division
+from generate.wilson_algorithm import animation_wilson
+from generate.braid_maze import animation_braid_maze_break_wall_method, animation_braid_maze_generate_wall_method
+from generate.unsolvablem_maze import animation_unsolvablem_maze
 
-    pygame.display.update() #actualitzar per cada frame
-    clock.tick(1) #ajustar a 30 FPS
-pygame.quit()
+from research.DFS import animation_DFS
+from research.BFS import animation_BFS
+from research.A_star import animation_A_star
+
+from data_manager import load_maze
+
+from representation.maze_animation import animate_maze_generation, animate_maze_research
+import config
+#animate_maze_generation(animation_recursive_backtracker(config.maze_size_int["large"]), 61)
+animate_maze_research(animation_A_star(load_maze("M6200003")[0],config.start_pos, config.exit_pos, config.direction), 67)'''

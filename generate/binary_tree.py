@@ -1,4 +1,7 @@
 import random
+from config import random_seed
+if random_seed is not None:
+    random.seed(random_seed)
 from generate.maze_generate import *
 
 #crear una lista amb 2 direcció que són les de biaix direacional (nord-oest)

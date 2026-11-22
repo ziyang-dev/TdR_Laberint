@@ -1,5 +1,7 @@
 import random
 import config
+if config.random_seed is not None:
+    random.seed(config.random_seed)
 import copy
 from generate.maze_generate import *
 from generate.wilson_algorithm import algorithm_wilson

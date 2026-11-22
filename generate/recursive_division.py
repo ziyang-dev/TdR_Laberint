@@ -1,4 +1,7 @@
 import random
+from config import random_seed
+if random_seed is not None:
+    random.seed(random_seed)
 from generate.maze_generate import *
 
 def generate_wall(maze, x, y, len, dir):  #generar un mur amb un furat en de la posició x,y a direccio dir de tamany len
