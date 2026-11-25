@@ -196,7 +196,13 @@ def chart_9gen3sol1size1info_heap(runs_id_list, info_type,  *, lst):
     ax.set_ylabel("Algorismes de cerca")
     ax.set_title(title)
 
-    heatmap = ax.imshow(info_list, cmap="plasma", aspect="auto")
+    custom_cmap = mcolors.LinearSegmentedColormap.from_list(
+    "red_yellow_green",
+    ["#1A9641", "#F7F793", "#D7191C"],
+    N=256
+    )
+
+    heatmap = ax.imshow(info_list, cmap=custom_cmap, aspect="auto")
         
     x_ticks_label = [config.generator_algorithm_label[category] for category in categories]
     ax.set_xticks(range(len(info_list[0])))
@@ -210,7 +216,7 @@ def chart_9gen3sol1size1info_heap(runs_id_list, info_type,  *, lst):
         for j in range(len(info_list[0])):
             val = info_list[i][j]
             text_label = f"{val:.3g}" 
-            text_color = "w" if info_list[i][j] < threshold else "k"
+            text_color = "k" #"w" if info_list[i][j] < threshold else "k"
             ax.text(
                 j, i,
                 text_label,
@@ -261,7 +267,7 @@ def chart_1gen1sol1size1info_optim_pie(runs_id_list,  *, lst):
     maze_dict={}
 
     mean_list=[0,0]
-
+    
     for run_id in runs_id_list:
         is_optimal,path_len,maze_id=load_determined_run_info(run_id,"is_optimal","movement_steps","maze_id")
         if int(is_optimal):
@@ -499,9 +505,11 @@ def save_dict_to_csv(row, data, chart_type, filename, *, extra=None): #save give
         if extra != None: writer.writerow([extra])
 
 def save_fig_and_close(fig, chart_type, filename):  #save a chart as png and close the figure
-    if config.save_chart_info_and_image==False: return
-    fig.savefig(f"{chart_info_to_folder(chart_type, "image")}/{filename}.png", dpi=300, bbox_inches="tight")
-    plt.close(fig)
+    if config.save_chart_info_and_image==True:
+        fig.set_size_inches(16, 10)
+        fig.savefig(f"{chart_info_to_folder(chart_type, "image")}/{filename}.png", dpi=300, bbox_inches="tight")
+    if config.close_chart_fig:
+        plt.close(fig)
 
 def chart_info_to_folder(chart_type, info_type):  #create and return folder
     if chart_type not in config.dict_chart_type.keys() or info_type not in ["image", "info"]:

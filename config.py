@@ -19,7 +19,7 @@ class Color:
 #region CONSTANTS
 
 random_seed=None
-experiment_id="E0050000"
+experiment_id="E1010000"
 
 
 
@@ -30,9 +30,9 @@ windows_size=600 # tamany de la pantalla, quadrat
 debug_label_panel_width = 700
 
 with_auxiliary_line=False
-with_debug_panel=False
+with_debug_panel=True
 
-animation_type="auto"  #["off","click","auto"]
+animation_type="click"  #["off","click","auto"]
 
 ticks=60
 
@@ -41,8 +41,9 @@ debug_stack_max_value=29
 
 
     # save image?
+close_chart_fig=True
 save_chart_info_and_image=True
-save_maze_image=True
+save_maze_image=False
 
 #endregion
 
@@ -138,10 +139,10 @@ MAZE_DIR = Path("maze")
 RUN_DIR = Path("run")
 
 
-runs_path="data_store/run/runs.csv"
-error_info_runs_path="data_store/run/error_info_runs_path.txt"
-runsSQL_path="data_store/run/runs.db"
-chart_info_path="data_store/chart"
+runs_path=f"{DATA_DIR}/{experiment_id[0:2]}/{RUN_DIR}/runs.csv"
+error_info_runs_path=f"{DATA_DIR}/{experiment_id[0:2]}/{RUN_DIR}/error_info_runs_path.txt"
+runsSQL_path=f"{DATA_DIR}/{experiment_id[0:2]}/{RUN_DIR}/runs.db"
+chart_info_path=f"{DATA_DIR}/{experiment_id[0:2]}/chart"
 
 #endregion
 

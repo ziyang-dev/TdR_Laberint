@@ -110,7 +110,7 @@ while running:
 pygame.quit()"""
 
 
-'''from generate.recursive_backtracker import animation_recursive_backtracker
+"""from generate.recursive_backtracker import animation_recursive_backtracker
 from generate.prim_algorithm import animation_prim
 from generate.binary_tree import animation_binary_tree
 from generate.sidewinder import animation_sidewinder
@@ -128,4 +128,39 @@ from data_manager import load_maze
 from representation.maze_animation import animate_maze_generation, animate_maze_research
 import config
 #animate_maze_generation(animation_recursive_backtracker(config.maze_size_int["large"]), 61)
-animate_maze_research(animation_A_star(load_maze("M6200003")[0],config.start_pos, config.exit_pos, config.direction), 67)'''
+animate_maze_research(animation_A_star(load_maze("M6200003")[0],config.start_pos, config.exit_pos, config.direction), 67)
+"""
+'''from chart_manager import *
+from data_manager import load_run_id
+info_type="vertices_explored"'''
+'''id_list=load_run_id(is_outlier="S", maze_category=1, solver_algorithm="DFS", maze_size=3)
+lst=translate_title("run_id", info="execution_time", gen=1, sol="DFS", size=3)
+chart_1gen1sol1size1info_runs(id_list,"execution_time", lst=lst)'''
+'''for i in range (1,6):
+    id_list=load_run_id(is_outlier="S", maze_size=i)
+    lst=translate_title("heap", info=info_type, size=i)
+    chart_9gen3sol1size1info_heap(id_list,info_type, lst=lst)'''
+"""for g in [7,8]:
+    for i in range(1,6):
+        id_list=load_run_id(is_outlier="S", maze_category=g, solver_algorithm="DFS", maze_size=i)
+        lst=translate_title("pie", gen=g, sol="DFS", size=i)
+        chart_1gen1sol1size1info_optim_pie(id_list,lst=lst)"""
+"""for g in range(1,10):
+    for i in range(1,6):
+        for s in ["DFS","BFS","A_star"]:
+            id_list=load_run_id(is_outlier="S", maze_category=g, solver_algorithm=s, maze_size=i)
+            lst=translate_title("ver_time", gen=g, sol=s, size=i)
+            chart_1gen1sol1size2info_ver_time(id_list,lst=lst)"""
+"""for g in range(1,10):
+    id_list=load_run_id(is_outlier="S", maze_category=g)
+    lst=translate_title("5_size", gen=g,info=info_type)
+    chart_1gen3sol5size1info(id_list,info_type,lst=lst)"""
+"""for g in range(1,10):
+    for i in range(1,6):
+        id_list=load_run_id(is_outlier="S", maze_category=g, maze_size=i)
+        lst=translate_title("box", gen=g, size=i, info=info_type)
+        chart_1gen3sol1size1info_box(id_list,info_type,lst=lst)"""
+# run_id,experiment_id,maze_id,solver_algorithm,is_solved, is_outlier, maze_size, maze_category
+# execution_time, memory_peak, vertices_explored,movement_steps,is_optimal
+#def translate_title(chart_type, *, info=None, gen=None, sol=None, size=None, extra=None):
+#print("Done")
