@@ -13,6 +13,7 @@ from research.BFS import algorithm_BFS
 
 def information_to_folder(args):
     items = [x for x in args if x is not False]
+    items.insert(0,config.experiment_id[0:2])
     items.insert(0,DATA_DIR)
     return Path(*items)
 

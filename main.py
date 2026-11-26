@@ -1,4 +1,4 @@
-"""import numpy as np
+'''import numpy as np
 import config
 import psutil
 
@@ -17,13 +17,13 @@ try:
     print(f"Connect Python whit {p.cpu_affinity()} cpu affinity")
 except:
     raise Exception ("Can not conect de cpu affinity")
-'''
+
 for gen_list in [[1,2,3],[4,5,6],[7,8,9]]:
     id_list=[]
     star_id=1
     end_id=100
     for gen in gen_list:
-        for size in [1,2,3,4,5]:
+        for size in [6]:
             for id in range(star_id,end_id+1):
                 maze_id=f"M{gen}{size}{id:05d}"
                 id_list.append(maze_id)
@@ -51,14 +51,9 @@ for gen_list in [[1,2,3],[4,5,6],[7,8,9]]:
     experiment_turn=int(config.experiment_id[2:4])+1
     config.experiment_id=config.experiment_id[:2]+f"{experiment_turn:02d}"+"0000"
 
-print(f"Final experiment id: {config.experiment_id}")'''
-from chart_manager import translate_title
-#chart_1gen1sol1size1info_runs(load_run_id(maze_id="M6200045", solver_algorithm="DFS"),"execution_time")
-chart_1gen1sol1size1info_maze(load_run_id(is_outlier="S", maze_category=1, maze_size=3, solver_algorithm="DFS"), "execution_time",lst=translate_title("box", size=3, gen=1, sol="DFS", info="execution_time"))
-#chart_1gen1sol1size1info_optim_pie(load_run_id(is_outlier="S", maze_category=5, solver_algorithm="DFS"))
-#run_id,experiment_id,maze_id,solver_algorithm,is_solved,execution_time,vertices_explored,movement_steps,is_optimal,memory_peak,maze_category,maze_size,is_outlier
-config.connection.close()
-"""
+print(f"Final experiment id: {config.experiment_id}")
+config.connection.close()'''
+
 
 """from representation.maze_representation import drawGrid, drawAuxiliaryLines, drawGraph, draw_exit
 from representation.graph_representation import *
@@ -110,7 +105,7 @@ while running:
 pygame.quit()"""
 
 
-"""from generate.recursive_backtracker import animation_recursive_backtracker
+'''from generate.recursive_backtracker import animation_recursive_backtracker
 from generate.prim_algorithm import animation_prim
 from generate.binary_tree import animation_binary_tree
 from generate.sidewinder import animation_sidewinder
@@ -128,8 +123,8 @@ from data_manager import load_maze
 from representation.maze_animation import animate_maze_generation, animate_maze_research
 import config
 #animate_maze_generation(animation_recursive_backtracker(config.maze_size_int["large"]), 61)
-animate_maze_research(animation_A_star(load_maze("M6200003")[0],config.start_pos, config.exit_pos, config.direction), 67)
-"""
+animate_maze_research(animation_A_star(load_maze("M6200003")[0],config.start_pos, config.exit_pos, config.direction), 67)'''
+
 '''from chart_manager import *
 from data_manager import load_run_id
 info_type="vertices_explored"'''
@@ -140,21 +135,21 @@ chart_1gen1sol1size1info_runs(id_list,"execution_time", lst=lst)'''
     id_list=load_run_id(is_outlier="S", maze_size=i)
     lst=translate_title("heap", info=info_type, size=i)
     chart_9gen3sol1size1info_heap(id_list,info_type, lst=lst)'''
-"""for g in [7,8]:
+'''for g in [7,8]:
     for i in range(1,6):
         id_list=load_run_id(is_outlier="S", maze_category=g, solver_algorithm="DFS", maze_size=i)
         lst=translate_title("pie", gen=g, sol="DFS", size=i)
-        chart_1gen1sol1size1info_optim_pie(id_list,lst=lst)"""
+        chart_1gen1sol1size1info_optim_pie(id_list,lst=lst)'''
 """for g in range(1,10):
     for i in range(1,6):
         for s in ["DFS","BFS","A_star"]:
             id_list=load_run_id(is_outlier="S", maze_category=g, solver_algorithm=s, maze_size=i)
             lst=translate_title("ver_time", gen=g, sol=s, size=i)
             chart_1gen1sol1size2info_ver_time(id_list,lst=lst)"""
-"""for g in range(1,10):
+'''for g in range(1,10):
     id_list=load_run_id(is_outlier="S", maze_category=g)
     lst=translate_title("5_size", gen=g,info=info_type)
-    chart_1gen3sol5size1info(id_list,info_type,lst=lst)"""
+    chart_1gen3sol5size1info(id_list,info_type,lst=lst)'''
 """for g in range(1,10):
     for i in range(1,6):
         id_list=load_run_id(is_outlier="S", maze_category=g, maze_size=i)
